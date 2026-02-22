@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 3a95f119ecbed1a469830af0231f6bc9
+  productGUID: 89b2ae188bcf6c74681470df9413a750
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: StoneMan
+  productName: StoneMan (lebih clean)
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -604,14 +604,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: StoneMan
+  metroPackageName: StoneMan (lebih clean)
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: StoneMan
+  metroApplicationDescription: StoneMan (lebih clean)
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -682,10 +682,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: d9a667f4-e94f-49c8-8eb1-a29671a1b1db
+  cloudProjectId: 7ac0d485-9812-403c-b818-969788af140e
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: StoneMan
+  projectName: StoneMan (lebih clean)
   organizationId: relminty
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
