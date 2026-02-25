@@ -13,6 +13,7 @@ public class PlayerMovement2D : MonoBehaviour
 
     private Rigidbody2D rb; //variable yang akan menyatu dengan Rigidbody2D rb;
     private Vector2 moveInput; //variable yang akan menghubungkan input gerakan player 2D
+    private PlayerInteract playerInteract;
 
     private bool isSprinting; //status sprint
     private bool isExhausted; //status exhausted (tidak bisa sprint)
@@ -20,6 +21,7 @@ public class PlayerMovement2D : MonoBehaviour
     void Start() 
     {
         rb = GetComponent<Rigidbody2D>(); //menyimpan dalam variable rb 
+        playerInteract = GetComponent<PlayerInteract>();
         currentStamina = maxStamina; //set stamina penuh saat mulai
         isExhausted = false;
     }
@@ -29,6 +31,11 @@ public class PlayerMovement2D : MonoBehaviour
         moveInput.x = Input.GetAxisRaw("Horizontal");
         moveInput.y = Input.GetAxisRaw("Vertical");
         moveInput = moveInput.normalized;
+
+        if (moveInput.sqrMagnitude > 0f && playerInteract != null)
+        {
+            playerInteract.SetFacingDirection(moveInput);
+        }
 
         //cek sprint hanya jika stamina ada, tidak exhausted, dan player bergerak
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isExhausted && moveInput.magnitude > 0)
