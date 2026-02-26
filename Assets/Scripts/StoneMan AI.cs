@@ -18,6 +18,7 @@ public class StoneManAI : MonoBehaviour
     private float teleportTimer;
 
     private Rigidbody2D rb;
+    private bool isFrozen;
 
     private enum State { Patrol, Teleport, Chase }
     private State currentState;
@@ -35,6 +36,11 @@ public class StoneManAI : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isFrozen)
+        {
+            return;
+        }
+
         switch (currentState)
         {
             case State.Patrol:
@@ -109,6 +115,20 @@ public class StoneManAI : MonoBehaviour
         rb.rotation = angle;
 
         rb.MovePosition(rb.position + direction * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    public void SetFrozen(bool frozen)
+    {
+        if (isFrozen == frozen)
+        {
+            return;
+        }
+
+        isFrozen = frozen;
+        if (isFrozen)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
     }
 
     // ---------------- TRIGGER DETECTION ----------------

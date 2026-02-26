@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using System.Collections.Generic;
 public class FlashlightController : MonoBehaviour
 {
     // ===== On Off =====
@@ -7,14 +8,29 @@ public class FlashlightController : MonoBehaviour
     private bool isOn;
 
     // ===== Battery =====
+    [Header("Battery Settings")]
     [SerializeField] private float batteryLife = 100f;
     [SerializeField] private float batteryDrainRate = 5f;
 
     // ===== Flashlight Component =====
+    [Header("Flashlight Settings")]
     [SerializeField] private Light2D flashlightLight;
     [SerializeField] private float lightAngleOffset = -90f;
 
+    // ===== Freeze Enemy Component =====
+    [Header("Freeze Enemy")]
+    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private LayerMask obstacleLayer;
+    [SerializeField] private float freezeRange = 8f;
+    [SerializeField, Range(1f, 180f)] private float freezeConeAngle = 40f;
+    [SerializeField] private bool checkObstacle = true;
+    [SerializeField] private Vector2 lightForwardLocalAxis = Vector2.up;
+
     private float currentBattery;
+    private readonly Collider2D[] enemyBuffer = new Collider2D[32];
+    private readonly HashSet<StoneManAI> frozenEnemies = new HashSet<StoneManAI>();
+    private readonly HashSet<StoneManAI> detectedEnemies = new HashSet<StoneManAI>();
+    private readonly List<StoneManAI> releaseBuffer = new List<StoneManAI>();
 
     void Start()
     {
@@ -88,7 +104,86 @@ public class FlashlightController : MonoBehaviour
 
     void HandleFreezeEnemy()
     {
-        // nanti logic untuk freeze enemy
+        if (!isOn || flashlightLight == null)
+        {
+            ReleaseAllFrozenEnemies();
+            return;
+        }
+
+        Vector2 origin = flashlightLight.transform.position;
+        Vector2 forward = flashlightLight.transform.TransformDirection(lightForwardLocalAxis).normalized;
+        float halfCone = freezeConeAngle * 0.5f;
+
+        detectedEnemies.Clear();
+        ContactFilter2D enemyFilter = new ContactFilter2D();
+        enemyFilter.useLayerMask = true;
+        enemyFilter.layerMask = enemyLayer;
+        enemyFilter.useTriggers = true;
+
+        int count = Physics2D.OverlapCircle(origin, freezeRange, enemyFilter, enemyBuffer);
+
+        for (int i = 0; i < count; i++)
+        {
+            Collider2D hit = enemyBuffer[i];
+            if (hit == null) continue;
+
+            StoneManAI enemy = hit.GetComponentInParent<StoneManAI>();
+            if (enemy == null) continue;
+
+            Vector2 toEnemy = (Vector2)enemy.transform.position - origin;
+            float distance = toEnemy.magnitude;
+            if (distance <= Mathf.Epsilon) continue;
+
+            float angle = Vector2.Angle(forward, toEnemy / distance);
+            if (angle > halfCone) continue;
+
+            if (checkObstacle && Physics2D.Linecast(origin, enemy.transform.position, obstacleLayer))
+            {
+                continue;
+            }
+
+            detectedEnemies.Add(enemy);
+            if (!frozenEnemies.Contains(enemy))
+            {
+                enemy.SetFrozen(true);
+                frozenEnemies.Add(enemy);
+            }
+        }
+
+        releaseBuffer.Clear();
+        foreach (StoneManAI enemy in frozenEnemies)
+        {
+            if (enemy == null || !detectedEnemies.Contains(enemy))
+            {
+                releaseBuffer.Add(enemy);
+            }
+        }
+
+        for (int i = 0; i < releaseBuffer.Count; i++)
+        {
+            StoneManAI enemy = releaseBuffer[i];
+            if (enemy != null)
+            {
+                enemy.SetFrozen(false);
+            }
+
+            frozenEnemies.Remove(enemy);
+        }
+    }
+
+    void ReleaseAllFrozenEnemies()
+    {
+        if (frozenEnemies.Count == 0) return;
+
+        foreach (StoneManAI enemy in frozenEnemies)
+        {
+            if (enemy != null)
+            {
+                enemy.SetFrozen(false);
+            }
+        }
+
+        frozenEnemies.Clear();
     }
 
     void HandleFacingLight()
@@ -120,5 +215,10 @@ public class FlashlightController : MonoBehaviour
         {
             currentBattery = batteryLife;
         }
+    }
+
+    void OnDisable()
+    {
+        ReleaseAllFrozenEnemies();
     }
 }
