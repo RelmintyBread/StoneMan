@@ -4,24 +4,35 @@ public class InputHandler : MonoBehaviour
 {
     private PlayerInteract playerInteract;
 
+    private FlashlightController flashlightController;
+
     void Start()
     {
         playerInteract = GetComponent<PlayerInteract>();
+        flashlightController = GetComponent<FlashlightController>();
     }
 
     void Update()
     {
-        if (playerInteract == null) return;
-
-        // Nanti, hanya blok ini yang diganti ke New Input System
-        if (Input.GetKeyDown(KeyCode.E))
+        //Input for Interact
+        if (playerInteract != null)
         {
-            playerInteract.TriggerInteractPressed();
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                playerInteract.TriggerInteractPressed();
+            }
+
+            if (Input.GetKeyUp(KeyCode.E))
+            {
+                playerInteract.TriggerInteractReleased();
+            }
         }
 
-        if (Input.GetKeyUp(KeyCode.E))
+        //Input for Flashlight
+        if (flashlightController != null)
         {
-            playerInteract.TriggerInteractReleased();
+            bool isHeld = Input.GetMouseButton(0);
+            flashlightController.SetFlashlightHeld(isHeld);
         }
     }
 }
