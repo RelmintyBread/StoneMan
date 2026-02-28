@@ -57,7 +57,7 @@ public class StoneManAI : MonoBehaviour
         }
     }
 
-    // ---------------- PATROL ----------------
+    //PATROL
     void Patrol()
     {
         if (patrolPoints.Length == 0) return;
@@ -75,7 +75,7 @@ public class StoneManAI : MonoBehaviour
         }
     }
 
-    // ---------------- TELEPORT ----------------
+    //TELEPORT
     void TeleportBehaviour()
     {
         teleportTimer += Time.fixedDeltaTime;
@@ -93,7 +93,7 @@ public class StoneManAI : MonoBehaviour
         }
     }
 
-    // ---------------- CHASE ----------------
+    //CHASE
     void Chase()
     {
         if (player == null) return;
@@ -106,7 +106,7 @@ public class StoneManAI : MonoBehaviour
         }
     }
 
-    // ---------------- MOVE FUNCTION ----------------
+    //MOVE FUNCTION
     void MoveTo(Vector2 target)
     {
         Vector2 direction = (target - rb.position).normalized;
@@ -131,7 +131,7 @@ public class StoneManAI : MonoBehaviour
         }
     }
 
-    // ---------------- TRIGGER DETECTION ----------------
+    //TRIGGER DETECTION 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("TeleportZone"))
@@ -159,7 +159,7 @@ public class StoneManAI : MonoBehaviour
         }
     }
 
-    // ---------------- FIND NEAREST PATROL ----------------
+    //FIND NEAREST PATROL
 void ReturnToNearestPatrol()
 {
     if (patrolPoints == null || patrolPoints.Length == 0)
