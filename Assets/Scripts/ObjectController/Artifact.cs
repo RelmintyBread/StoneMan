@@ -3,7 +3,7 @@ using UnityEngine;
 public class Artifact : MonoBehaviour, IInteractable
 {
     [SerializeField] private GameObject interactUI;
-    [SerializeField] private float requiredHoldTime = 1.5f; // Butuh 1.5 detik untuk mengambil artefak
+    [SerializeField] private float requiredHoldTime = 3f; // Butuh 1.5 detik untuk mengambil artefak
 
     private float currentHoldTime = 0f;
     private bool isHolding = false;
