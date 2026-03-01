@@ -98,6 +98,13 @@ public class StoneManAI : MonoBehaviour
     {
         if (player == null) return;
 
+        PlayerHide hide = player.GetComponent<PlayerHide>();
+        if (hide != null && hide.IsHiding())
+        {
+            currentState = State.Teleport;
+            return;
+        }
+
         float distance = Vector2.Distance(transform.position, player.position);
 
         if (distance > stopDistance)
@@ -160,31 +167,31 @@ public class StoneManAI : MonoBehaviour
     }
 
     //FIND NEAREST PATROL
-void ReturnToNearestPatrol()
-{
-    if (patrolPoints == null || patrolPoints.Length == 0)
-        return;
-
-    float shortestDistance = Mathf.Infinity;
-    int nearestIndex = 0;
-
-    for (int i = 0; i < patrolPoints.Length; i++)
+    void ReturnToNearestPatrol()
     {
-        if (patrolPoints[i] == null)
-            continue; // skip destroyed points
+        if (patrolPoints == null || patrolPoints.Length == 0)
+            return;
 
-        float distance = Vector2.Distance(
-            transform.position,
-            patrolPoints[i].position
-        );
+        float shortestDistance = Mathf.Infinity;
+        int nearestIndex = 0;
 
-        if (distance < shortestDistance)
+        for (int i = 0; i < patrolPoints.Length; i++)
         {
-            shortestDistance = distance;
-            nearestIndex = i;
-        }
-    }
+            if (patrolPoints[i] == null)
+                continue; // skip destroyed points
 
-    currentPointIndex = nearestIndex;
-}
+            float distance = Vector2.Distance(
+                transform.position,
+                patrolPoints[i].position
+            );
+
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                nearestIndex = i;
+            }
+        }
+
+        currentPointIndex = nearestIndex;
+    }
 }
