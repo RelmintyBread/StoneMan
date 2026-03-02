@@ -8,9 +8,21 @@ public class PlayerInteract : MonoBehaviour
 
     private IInteractable currentInteractable; // Menyimpan target saat ini
     private bool isInteractPressed;
+    private PlayerHide playerHide;
+
+    void Start()
+    {
+        playerHide = GetComponent<PlayerHide>();
+    }
 
     void Update()
     {
+        // Saat hidden, interaksi dipusatkan ke current hiding spot dan tidak perlu retarget raycast.
+        if (playerHide != null && playerHide.IsHidden)
+        {
+            return;
+        }
+
         // Lakukan Raycast setiap frame untuk mendeteksi objek
         RaycastHit2D hit = Physics2D.Raycast(transform.position, currentFacingDirection, interactDistance, interactableLayer);
         IInteractable detectedInteractable = null;
@@ -48,6 +60,12 @@ public class PlayerInteract : MonoBehaviour
 
     public void TriggerInteractPressed()
     {
+        if (playerHide != null && playerHide.IsHidden)
+        {
+            playerHide.TryExitCurrentHidingSpot();
+            return;
+        }
+
         isInteractPressed = true;
 
         if (currentInteractable != null)

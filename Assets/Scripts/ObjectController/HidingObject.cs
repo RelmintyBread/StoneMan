@@ -3,12 +3,16 @@ using UnityEngine;
 public class HidingObject : MonoBehaviour, IInteractable
 {
     [SerializeField] private GameObject interactUI;
-    private bool isHidden = false; // Status apakah player sedang di dalam
+    [SerializeField] private PlayerHide playerHide; // Referensi ke script PlayerHide untuk memanggil fungsi sembunyi
 
     public void ShowInteractUI()
     {
-        // Hanya munculkan UI "E" jika player belum sembunyi
-        if (interactUI != null && !isHidden) interactUI.SetActive(true);
+        if (interactUI == null) return;
+        if (playerHide == null) return;
+
+        // Saat player sedang ngumpet di object ini, prompt tetap disembunyikan.
+        bool hiddenInThisObject = playerHide.IsHidden && playerHide.CurrentHidingSpot == this;
+        interactUI.SetActive(!hiddenInThisObject);
     }
 
     public void HideInteractUI()
@@ -29,8 +33,11 @@ public class HidingObject : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        // Toggle (bolak-balik) state sembunyi
-        if (!isHidden)
+        if (playerHide == null) return;
+
+        // Toggle (bolak-balik) state sembunyi, tapi state tunggal ada di PlayerHide.
+        bool isHiddenInThisObject = playerHide.IsHidden && playerHide.CurrentHidingSpot == this;
+        if (!isHiddenInThisObject)
         {
             MasukPersembunyian();
         }
@@ -42,19 +49,24 @@ public class HidingObject : MonoBehaviour, IInteractable
 
     private void MasukPersembunyian()
     {
-        isHidden = true;
+        if (playerHide == null) return;
+        if (!playerHide.HidePlayer(this)) return;
+
         HideInteractUI(); // Sembunyikan prompt "E" agar layar bersih saat ngumpet
         Debug.Log("Syuut... Player sembunyi!");
-
-        // Logika sembunyi: Matikan SpriteRenderer player, disable script movement, ubah tag/layer physics
     }
 
     private void KeluarPersembunyian()
     {
-        isHidden = false;
+        if (playerHide == null) return;
+        if (!playerHide.UnhidePlayer(this)) return;
+
         ShowInteractUI(); // Munculkan lagi prompt "E" untuk opsi ngumpet lagi nanti
         Debug.Log("Player keluar dari tempat persembunyian!");
+    }
 
-        // Logika keluar: Nyalakan lagi SpriteRenderer player, enable script movement
+    public void KeluarPersembunyianDariPlayer()
+    {
+        KeluarPersembunyian();
     }
 }
