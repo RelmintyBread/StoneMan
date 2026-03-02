@@ -3,7 +3,7 @@ using UnityEngine;
 public class HidingObject : MonoBehaviour, IInteractable
 {
     [SerializeField] private GameObject interactUI;
-    [SerializeField] private PlayerHide playerHide; // Referensi ke script PlayerHide untuk memanggil fungsi sembunyi
+    [SerializeField] public PlayerHide playerHide; // Referensi ke script PlayerHide untuk memanggil fungsi sembunyi
 
     public void ShowInteractUI()
     {

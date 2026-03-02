@@ -17,6 +17,7 @@ public class PlayerMovement2D : MonoBehaviour
 
     private bool isSprinting; //status sprint
     private bool isExhausted; //status exhausted (tidak bisa sprint)
+    public float rotationSpeed = 720f;
 
     void Start() 
     {
@@ -35,7 +36,15 @@ public class PlayerMovement2D : MonoBehaviour
         if (moveInput.sqrMagnitude > 0f && playerInteract != null)
         {
             playerInteract.SetFacingDirection(moveInput);
+
+            if (moveInput != Vector2.zero) {
+            {
+            float targetAngle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
+            float smoothAngle = Mathf.LerpAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime / 100f);
+            rb.rotation = smoothAngle;
+            }
         }
+    }
 
         //cek sprint hanya jika stamina ada, tidak exhausted, dan player bergerak
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isExhausted && moveInput.magnitude > 0)

@@ -7,6 +7,8 @@ public class Artifact : MonoBehaviour, IInteractable
 
     private float currentHoldTime = 0f;
     private bool isHolding = false;
+    public static int collectedArtifacts = 0;
+    public static int totalArtifactsRequired  = 5;
 
     void Update()
     {
@@ -50,7 +52,10 @@ public class Artifact : MonoBehaviour, IInteractable
     public void Interact()
     {
         isHolding = false; // Hentikan perhitungan
-        Debug.Log("Artefak berhasil diekstrak dan masuk inventory!");
+
+        collectedArtifacts++;
+
+        Debug.Log("Artefak berhasil diekstrak dan masuk inventory! Total: " + collectedArtifacts + "/5");
 
         // Logika game: tambah skor, play SFX, masuk inventory, dll.
 
