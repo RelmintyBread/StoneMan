@@ -8,7 +8,7 @@ public class PlayerInteract : MonoBehaviour
 
     private IInteractable currentInteractable; // Menyimpan target saat ini
     private bool isInteractPressed;
-    private PlayerHide playerHide;
+    public PlayerHide playerHide;
 
     void Start()
     {
