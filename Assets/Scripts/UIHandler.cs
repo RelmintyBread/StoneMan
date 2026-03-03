@@ -97,7 +97,7 @@ public class UIHandler : MonoBehaviour
     {
         this.collectedArtifacts = collectedArtifacts;
         this.totalArtifactsRequired = totalArtifactsRequired;
-        artifactText.text = "Artefak: " + collectedArtifacts.ToString() + " / " + totalArtifactsRequired.ToString();
+        artifactText.text = collectedArtifacts.ToString() + " / " + totalArtifactsRequired.ToString();
     }
 
     public void ShowInteractPrompt()
