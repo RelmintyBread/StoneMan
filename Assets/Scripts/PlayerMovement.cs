@@ -7,7 +7,7 @@ public class PlayerMovement2D : MonoBehaviour
 
     [Header("Stamina Settings")]
     public float maxStamina = 4f; //maks stamina (6 detik)
-    [Range(0,6)] public float currentStamina; //stamina saat ini
+    [Range(0, 6)] public float currentStamina; //stamina saat ini
     public float staminaDrainRate = 1f; //habis dalam 6 detik
     public float staminaRegenRate = 1f; //regen dalam 6 detik
 
@@ -19,12 +19,13 @@ public class PlayerMovement2D : MonoBehaviour
     private bool isExhausted; //status exhausted (tidak bisa sprint)
     public float rotationSpeed = 720f;
 
-    void Start() 
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>(); //menyimpan dalam variable rb 
         playerInteract = GetComponent<PlayerInteract>();
         currentStamina = maxStamina; //set stamina penuh saat mulai
         isExhausted = false;
+        HandleUpdateUI();
     }
 
     void Update()
@@ -37,14 +38,13 @@ public class PlayerMovement2D : MonoBehaviour
         {
             playerInteract.SetFacingDirection(moveInput);
 
-            if (moveInput != Vector2.zero) {
+            if (moveInput != Vector2.zero)
             {
-            float targetAngle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
-            float smoothAngle = Mathf.LerpAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime / 100f);
-            rb.rotation = smoothAngle;
+                float targetAngle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
+                float smoothAngle = Mathf.LerpAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime / 100f);
+                rb.rotation = smoothAngle;
             }
         }
-    }
 
         //cek sprint hanya jika stamina ada, tidak exhausted, dan player bergerak
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isExhausted && moveInput.magnitude > 0)
@@ -57,6 +57,7 @@ public class PlayerMovement2D : MonoBehaviour
         }
 
         HandleStamina();
+        HandleUpdateUI();
     }
 
     void FixedUpdate()
@@ -90,5 +91,10 @@ public class PlayerMovement2D : MonoBehaviour
                 }
             }
         }
+    }
+
+    void HandleUpdateUI()
+    {
+        UIHandler.Instance.SetStaminaUI(currentStamina, maxStamina);
     }
 }

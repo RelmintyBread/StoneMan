@@ -32,10 +32,14 @@ public class FlashlightController : MonoBehaviour
     private readonly HashSet<StoneManAI> detectedEnemies = new HashSet<StoneManAI>();
     private readonly List<StoneManAI> releaseBuffer = new List<StoneManAI>();
 
+    private UIHandler uiHandler;
+
     void Start()
     {
+        uiHandler = UIHandler.Instance;
         flashlightLight.enabled = false;
         currentBattery = batteryLife;
+        HandleUpdateUI();
     }
 
     public void SetFlashlightHeld(bool held)
@@ -47,6 +51,7 @@ public class FlashlightController : MonoBehaviour
     {
         HandleFlashlight();
         HandleBattery();
+        HandleUpdateUI();
         HandleFacingLight();
     }
 
@@ -99,6 +104,14 @@ public class FlashlightController : MonoBehaviour
                 TurnOff();
                 Debug.Log("Battery depleted!");
             }
+        }
+    }
+
+    void HandleUpdateUI()
+    {
+        if (uiHandler != null)
+        {
+            uiHandler.SetBatteryUI(currentBattery, batteryLife);
         }
     }
 
