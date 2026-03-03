@@ -20,6 +20,12 @@ public class PlayerInteract : MonoBehaviour
         // Saat hidden, interaksi dipusatkan ke current hiding spot dan tidak perlu retarget raycast.
         if (playerHide != null && playerHide.IsHidden)
         {
+            if (currentInteractable != null)
+            {
+                currentInteractable.HideInteractUI();
+                if (isInteractPressed) currentInteractable.StopInteract();
+                currentInteractable = null;
+            }
             return;
         }
 

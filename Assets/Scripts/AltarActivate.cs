@@ -2,25 +2,20 @@ using UnityEngine;
 
 public class Altar : MonoBehaviour, IInteractable
 {
-    [SerializeField] private GameObject interactUI;
-
     public void ShowInteractUI()
     {
-        if (interactUI == null) return;
-
         // Only show UI if player collected all artifacts
         if (Artifact.collectedArtifacts >= Artifact.totalArtifactsRequired)
-            interactUI.SetActive(true);
+            UIHandler.Instance?.ShowInteractPrompt();
         else {
-            interactUI.SetActive(false);
+            UIHandler.Instance?.HideInteractPrompt();
         }
 
     }
 
     public void HideInteractUI()
     {
-        if (interactUI != null)
-            interactUI.SetActive(false);
+        UIHandler.Instance?.HideInteractPrompt();
     }
 
     public void StartInteract()

@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Battery : MonoBehaviour, IInteractable
 {
-    [SerializeField] private GameObject interactUI;
     [SerializeField] private int batteryAmount = 20; // Jumlah baterai yang diberikan saat diambil
     [SerializeField] private float requiredHoldTime = 1.5f; // Waktu yang dibutuhkan untuk mengambil baterai, bisa diatur sesuai kebutuhan
     [SerializeField] private FlashlightController flashlightController;
@@ -28,12 +27,12 @@ public class Battery : MonoBehaviour, IInteractable
 
     public void ShowInteractUI()
     {
-        if (interactUI != null) interactUI.SetActive(true);
+        UIHandler.Instance?.ShowInteractPrompt();
     }
 
     public void HideInteractUI()
     {
-        if (interactUI != null) interactUI.SetActive(false);
+        UIHandler.Instance?.HideInteractPrompt();
     }
 
     public void StartInteract()

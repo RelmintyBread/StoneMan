@@ -24,6 +24,14 @@ public class UIHandler : MonoBehaviour
     private int collectedArtifacts;
     private int totalArtifactsRequired;
 
+    [Header("Interact UI")]
+    [SerializeField] private RectTransform interactPrompt;
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Camera worldCamera;
+    [SerializeField] private Vector3 interactPromptWorldOffset = new Vector3(0f, 2f, 0f);
+
+    private bool isInteractPromptVisible;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -33,6 +41,40 @@ public class UIHandler : MonoBehaviour
         }
 
         Instance = this;
+
+        if (worldCamera == null)
+        {
+            worldCamera = Camera.main;
+        }
+
+        if (playerTransform == null)
+        {
+            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            if (playerObject != null)
+            {
+                playerTransform = playerObject.transform;
+            }
+        }
+
+        if (interactPrompt != null)
+        {
+            interactPrompt.gameObject.SetActive(false);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (!isInteractPromptVisible || interactPrompt == null || playerTransform == null || worldCamera == null)
+        {
+            if (worldCamera == null)
+            {
+                worldCamera = Camera.main;
+            }
+            return;
+        }
+
+        Vector3 worldPos = playerTransform.position + interactPromptWorldOffset;
+        interactPrompt.position = worldCamera.WorldToScreenPoint(worldPos);
     }
 
     public void SetBatteryUI(float batteryAmount, float maxBatteryAmount)
@@ -56,5 +98,21 @@ public class UIHandler : MonoBehaviour
         this.collectedArtifacts = collectedArtifacts;
         this.totalArtifactsRequired = totalArtifactsRequired;
         artifactText.text = "Artefak: " + collectedArtifacts.ToString() + " / " + totalArtifactsRequired.ToString();
+    }
+
+    public void ShowInteractPrompt()
+    {
+        if (interactPrompt == null) return;
+
+        isInteractPromptVisible = true;
+        interactPrompt.gameObject.SetActive(true);
+    }
+
+    public void HideInteractPrompt()
+    {
+        if (interactPrompt == null) return;
+
+        isInteractPromptVisible = false;
+        interactPrompt.gameObject.SetActive(false);
     }
 }

@@ -2,22 +2,27 @@ using UnityEngine;
 
 public class HidingObject : MonoBehaviour, IInteractable
 {
-    [SerializeField] private GameObject interactUI;
     [SerializeField] public PlayerHide playerHide; // Referensi ke script PlayerHide untuk memanggil fungsi sembunyi
 
     public void ShowInteractUI()
     {
-        if (interactUI == null) return;
         if (playerHide == null) return;
 
         // Saat player sedang ngumpet di object ini, prompt tetap disembunyikan.
         bool hiddenInThisObject = playerHide.IsHidden && playerHide.CurrentHidingSpot == this;
-        interactUI.SetActive(!hiddenInThisObject);
+        if (hiddenInThisObject)
+        {
+            UIHandler.Instance?.HideInteractPrompt();
+        }
+        else
+        {
+            UIHandler.Instance?.ShowInteractPrompt();
+        }
     }
 
     public void HideInteractUI()
     {
-        if (interactUI != null) interactUI.SetActive(false);
+        UIHandler.Instance?.HideInteractPrompt();
     }
 
     public void StartInteract()

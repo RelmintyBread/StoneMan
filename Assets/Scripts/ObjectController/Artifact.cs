@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Artifact : MonoBehaviour, IInteractable
 {
-    [SerializeField] private GameObject interactUI;
     [SerializeField] private float requiredHoldTime = 3f; // Butuh 1.5 detik untuk mengambil artefak
 
     private float currentHoldTime = 0f;
@@ -29,12 +28,12 @@ public class Artifact : MonoBehaviour, IInteractable
 
     public void ShowInteractUI()
     {
-        if (interactUI != null) interactUI.SetActive(true);
+        UIHandler.Instance?.ShowInteractPrompt();
     }
 
     public void HideInteractUI()
     {
-        if (interactUI != null) interactUI.SetActive(false);
+        UIHandler.Instance?.HideInteractPrompt();
     }
 
     public void StartInteract()
@@ -66,6 +65,7 @@ public class Artifact : MonoBehaviour, IInteractable
 
     void HandleUpdateUI()
     {
+        if (UIHandler.Instance == null) return;
         UIHandler.Instance.SetArtifactUI(collectedArtifacts, totalArtifactsRequired);
     }
 }
