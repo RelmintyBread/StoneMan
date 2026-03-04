@@ -2,22 +2,30 @@ using UnityEngine;
 
 public class Battery : MonoBehaviour, IInteractable
 {
-    [SerializeField] private int batteryAmount = 20; // Jumlah baterai yang diberikan saat diambil
-    [SerializeField] private float requiredHoldTime = 1.5f; // Waktu yang dibutuhkan untuk mengambil baterai, bisa diatur sesuai kebutuhan
+    [Header("Battery Settings")]
+    [SerializeField] private string uniqueID;   // IMPORTANT: Set different ID per battery in Inspector
+    [SerializeField] private int batteryAmount = 20;
+    [SerializeField] private float requiredHoldTime = 1.5f;
     [SerializeField] private FlashlightController flashlightController;
 
-    private float currentHoldTime = 0f; // Waktu saat ini yang telah dipegang
-    private bool isHolding = false; // Apakah tombol interaksi sedang ditekan
+    private float currentHoldTime = 0f;
+    private bool isHolding = false;
 
+    void Start()
+    {
+        // If battery already taken before → destroy immediately
+        if (PlayerPrefs.GetInt("Battery_" + uniqueID, 0) == 1)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Update()
     {
-        // Hanya menghitung waktu jika tombol sedang ditahan
         if (isHolding)
         {
             currentHoldTime += Time.deltaTime;
 
-            // Jika waktu hold sudah tercapai, eksekusi pengambilan
             if (currentHoldTime >= requiredHoldTime)
             {
                 Interact();
@@ -38,21 +46,27 @@ public class Battery : MonoBehaviour, IInteractable
     public void StartInteract()
     {
         isHolding = true;
-        currentHoldTime = 0f; // Reset waktu hold saat mulai interaksi
+        currentHoldTime = 0f;
     }
 
     public void StopInteract()
     {
-        // Tidak perlu aksi saat tombol dilepas untuk interaksi instan
         isHolding = false;
-        currentHoldTime = 0f; // Reset waktu hold saat interaksi dihentikan
+        currentHoldTime = 0f;
     }
 
     public void Interact()
     {
-        Debug.Log("Player mengambil baterai!");
-        // Logika untuk menambahkan baterai ke inventory player atau mengaktifkan sesuatu
-        flashlightController.RechargeBattery(batteryAmount); // Contoh: Menambahkan baterai ke flashlight controller
-        Destroy(gameObject); // Hapus objek baterai setelah diambil
+        isHolding = false;
+
+        Debug.Log("Battery picked!");
+
+        flashlightController.RechargeBattery(batteryAmount);
+
+        // SAVE THAT THIS BATTERY IS TAKEN
+        PlayerPrefs.SetInt("Battery_" + uniqueID, 1);
+        PlayerPrefs.Save();
+
+        Destroy(gameObject);
     }
 }

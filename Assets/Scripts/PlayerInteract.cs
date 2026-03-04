@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
-    public float interactDistance = 3f;
+    public float interactDistance = 6f;
     public LayerMask interactableLayer;
     public Vector2 currentFacingDirection = Vector2.up;
 
