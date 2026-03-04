@@ -93,8 +93,11 @@ public class PlayerMovement2D : MonoBehaviour
         }
     }
 
-    void HandleUpdateUI()
+void HandleUpdateUI()
+{
+    if (UIHandler.Instance != null)
     {
         UIHandler.Instance.SetStaminaUI(currentStamina, maxStamina);
     }
+}
 }
