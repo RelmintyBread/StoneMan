@@ -25,7 +25,7 @@ public class StoneManAI : MonoBehaviour
     [SerializeField] private Collider2D worldBounds;
 
     [Header("Teleport")]
-    public float teleportCooldown = 2f;
+    [SerializeField] private float teleportCooldown = 5f;
     [SerializeField] private int maxRetry = 7;
 
     // ─────────────────────────────────────────────

@@ -3,11 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
-    public GameObject pauseMenuUI;
+    public GameObject pausePanelUI;
+    public GameObject gamePanelUI;
 
     void Start()
     {
-        pauseMenuUI.SetActive(false);
+        pausePanelUI.SetActive(false);
+        gamePanelUI.SetActive(true);
         Time.timeScale = 1f;
     }
 
@@ -22,9 +24,9 @@ public class PauseManager : MonoBehaviour
                 Resume();
         }
 
-       if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Debug.Log ("ESC PRESSED");
+            Debug.Log("ESC PRESSED");
         }
     }
 
@@ -32,11 +34,12 @@ public class PauseManager : MonoBehaviour
 
     public void Resume()
     {
-        pauseMenuUI.SetActive(false);
+        pausePanelUI.SetActive(false);
+        gamePanelUI.SetActive(true);
         Time.timeScale = 1f;
     }
 
-        public void MainMenu()
+    public void MainMenu()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
@@ -44,7 +47,8 @@ public class PauseManager : MonoBehaviour
 
     public void Pause()
     {
-        pauseMenuUI.SetActive(true);
+        pausePanelUI.SetActive(true);
+        gamePanelUI.SetActive(false);
         Time.timeScale = 0f;
     }
 }

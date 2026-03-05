@@ -3,6 +3,7 @@ using UnityEngine;
 public class Door : MonoBehaviour, IInteractable
 {
     private bool isOpen = false;
+    [SerializeField] private Transform engsel;
 
     public void ShowInteractUI() { }
     public void HideInteractUI() { }
@@ -17,9 +18,9 @@ public class Door : MonoBehaviour, IInteractable
     public void Interact()
     {
         if (!isOpen)
-            transform.Rotate(0f, 0f, 90f);
+            engsel.Rotate(0f, 0f, 90f);
         else
-            transform.Rotate(0f, 0f, -90f);
+            engsel.Rotate(0f, 0f, -90f);
 
         isOpen = !isOpen;
     }

@@ -4,13 +4,7 @@ public class Altar : MonoBehaviour, IInteractable
 {
     public void ShowInteractUI()
     {
-        // Only show UI if player collected all artifacts
-        if (Artifact.collectedArtifacts >= Artifact.totalArtifactsRequired)
-            UIHandler.Instance?.ShowInteractPrompt();
-        else {
-            UIHandler.Instance?.HideInteractPrompt();
-        }
-
+        UIHandler.Instance?.ShowInteractPrompt();
     }
 
     public void HideInteractUI()
