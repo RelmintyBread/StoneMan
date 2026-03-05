@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Door : MonoBehaviour, IInteractable
 {
-    private bool isOpen = false;
+    public bool isOpen = false;
     [SerializeField] private Transform engsel;
 
     public void ShowInteractUI() { }

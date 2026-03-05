@@ -1,5 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// Orchestrator utama AI Stoneman.
+/// Hanya bertanggung jawab atas:
+/// - Deteksi jarak ke player
+/// - State machine (Patrol / Teleport / Chase)
+/// - Mendelegasikan eksekusi ke StoneManMover dan StoneManPatrol
+/// </summary>
+[RequireComponent(typeof(StoneManMover))]
+[RequireComponent(typeof(StoneManPatrol))]
 public class StoneManAI : MonoBehaviour
 {
     // ─────────────────────────────────────────────
@@ -9,10 +18,6 @@ public class StoneManAI : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform player;
     [SerializeField] private PlayerHide hide;
-
-    [Header("Movement")]
-    public float moveSpeed = 3f;
-    public Transform[] patrolPoints;
 
     [Header("Detection Distances")]
     public float bustedDistance = 1f;
@@ -25,7 +30,7 @@ public class StoneManAI : MonoBehaviour
     [SerializeField] private Collider2D worldBounds;
 
     [Header("Teleport")]
-    [SerializeField] private float teleportCooldown = 5f;
+    public float teleportCooldown = 2f;
     [SerializeField] private int maxRetry = 7;
 
     // ─────────────────────────────────────────────
@@ -35,11 +40,11 @@ public class StoneManAI : MonoBehaviour
     private enum State { Patrol, Teleport, Chase }
 
     private State currentState;
-    private Rigidbody2D rb;
-    private bool isFrozen;
-    private int currentPatrolIndex;
-    private float teleportTimer;
+    private State previousState;
+    private StoneManMover mover;
+    private StoneManPatrol patrol;
     private float distanceToPlayer;
+    private float teleportTimer;
 
     // ─────────────────────────────────────────────
     //  UNITY LIFECYCLE
@@ -47,7 +52,8 @@ public class StoneManAI : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        mover = GetComponent<StoneManMover>();
+        patrol = GetComponent<StoneManPatrol>();
 
         if (player == null)
         {
@@ -59,7 +65,8 @@ public class StoneManAI : MonoBehaviour
             }
         }
 
-        RefreshDistanceToPlayer();
+        RefreshDistance();
+        previousState = State.Patrol;
         UpdateState();
     }
 
@@ -67,24 +74,32 @@ public class StoneManAI : MonoBehaviour
     {
         if (player == null) return;
 
-        RefreshDistanceToPlayer();
+        RefreshDistance();
         UpdateState();
 
         if (distanceToPlayer <= bustedDistance)
-        {
             OnPlayerBusted();
-        }
     }
 
     void FixedUpdate()
     {
-        if (isFrozen) return;
+        if (mover.IsFrozen) return;
 
         switch (currentState)
         {
-            case State.Patrol: Patrol(); break;
-            case State.Teleport: TeleportBehaviour(); break;
-            case State.Chase: Chase(); break;
+            case State.Patrol:
+                patrol.StartPatrol();
+                break;
+
+            case State.Teleport:
+                patrol.StopPatrol();
+                TeleportBehaviour();
+                break;
+
+            case State.Chase:
+                patrol.StopPatrol();
+                mover.MoveTo(player.position);
+                break;
         }
     }
 
@@ -94,7 +109,7 @@ public class StoneManAI : MonoBehaviour
 
     void UpdateState()
     {
-        State previousState = currentState;
+        previousState = currentState;
         bool playerIsHiding = hide != null && hide.IsHiding();
 
         if (playerIsHiding)
@@ -110,31 +125,9 @@ public class StoneManAI : MonoBehaviour
         else
             currentState = State.Patrol;
 
-        // Snap ke patrol point terdekat saat baru masuk state Patrol
+        // Saat baru masuk Patrol: cari patrol point terdekat yang BISA DICAPAI via A*
         if (currentState == State.Patrol && previousState != State.Patrol)
-            ReturnToNearestPatrol();
-    }
-
-    // ─────────────────────────────────────────────
-    //  PATROL
-    // ─────────────────────────────────────────────
-
-    void Patrol()
-    {
-        if (patrolPoints == null || patrolPoints.Length == 0) return;
-
-        Transform target = patrolPoints[currentPatrolIndex];
-        if (target == null) { AdvancePatrolIndex(); return; }
-
-        MoveTo(target.position);
-
-        if (Vector2.Distance(transform.position, target.position) < 0.5f)
-            AdvancePatrolIndex();
-    }
-
-    void AdvancePatrolIndex()
-    {
-        currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
+            patrol.ReturnToNearestReachable();
     }
 
     // ─────────────────────────────────────────────
@@ -147,12 +140,10 @@ public class StoneManAI : MonoBehaviour
         if (teleportTimer < teleportCooldown) return;
         teleportTimer = 0f;
 
-        // Choose ring based on whether player is within noise range
         bool inNoiseRange = distanceToPlayer <= noiseDistance;
         float minRing = inNoiseRange ? chaseDistance : noiseDistance;
         float maxRing = inNoiseRange ? noiseDistance : teleportDistance;
 
-        //Ini kalau di noise maka play noise dan teleportnya di daerah noise, kalau gak ya teleportnya di luar noise tapi masih dalam teleportDistance. Jadi kalau player ngumpet tapi masih kedengeran, StoneMan bakal teleport lebih dekat ke player. Kalau player ngumpet dan gak kedengeran, StoneMan bakal teleport lebih jauh, mungkin buat cari-cari player.
         if (inNoiseRange)
             Debug.Log("StoneMan hears the player — teleporting close!");
 
@@ -192,48 +183,10 @@ public class StoneManAI : MonoBehaviour
     }
 
     // ─────────────────────────────────────────────
-    //  CHASE
-    // ─────────────────────────────────────────────
-
-    void Chase()
-    {
-        // State transition back to Teleport is handled by UpdateState();
-        // Chase() only needs to move.
-        MoveTo(player.position);
-    }
-
-    // ─────────────────────────────────────────────
-    //  MOVEMENT
-    // ─────────────────────────────────────────────
-
-    void MoveTo(Vector2 target)
-    {
-        Vector2 direction = (target - rb.position).normalized;
-
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        rb.rotation = angle;
-
-        rb.MovePosition(rb.position + direction * moveSpeed * Time.fixedDeltaTime);
-    }
-
-    // ─────────────────────────────────────────────
-    //  PUBLIC API
-    // ─────────────────────────────────────────────
-
-    public void SetFrozen(bool frozen)
-    {
-        if (isFrozen == frozen) return;
-
-        isFrozen = frozen;
-        if (isFrozen)
-            rb.linearVelocity = Vector2.zero;
-    }
-
-    // ─────────────────────────────────────────────
     //  HELPERS
     // ─────────────────────────────────────────────
 
-    void RefreshDistanceToPlayer()
+    void RefreshDistance()
     {
         if (player != null)
             distanceToPlayer = Vector2.Distance(transform.position, player.position);
@@ -245,25 +198,6 @@ public class StoneManAI : MonoBehaviour
         // TODO: trigger game-over / damage logic here
     }
 
-    void ReturnToNearestPatrol()
-    {
-        if (patrolPoints == null || patrolPoints.Length == 0) return;
-
-        float shortest = Mathf.Infinity;
-        int nearestIndex = 0;
-
-        for (int i = 0; i < patrolPoints.Length; i++)
-        {
-            if (patrolPoints[i] == null) continue;
-
-            float d = Vector2.Distance(transform.position, patrolPoints[i].position);
-            if (d < shortest)
-            {
-                shortest = d;
-                nearestIndex = i;
-            }
-        }
-
-        currentPatrolIndex = nearestIndex;
-    }
+    /// <summary>Freeze / unfreeze dari luar (misal cutscene).</summary>
+    public void SetFrozen(bool frozen) => mover.SetFrozen(frozen);
 }
