@@ -6,7 +6,6 @@ public class NewGameScipt : MonoBehaviour
     public void StartNewGame()
     {
         PlayerPrefs.DeleteAll();   
-        PlayerPrefs.Save();
 
         SceneManager.LoadScene(1);
     }
