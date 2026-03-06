@@ -108,7 +108,7 @@ public class StoneManMover : MonoBehaviour
         if (door == null) return false;
 
         // Hanya interact kalau pintu masih tertutup
-        if (!door.isOpen)
+        if (!door.IsOpen)
         {
             door.Interact();
             StartCoroutine(WaitForDoorRoutine());

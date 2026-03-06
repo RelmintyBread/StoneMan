@@ -114,9 +114,7 @@ public class StoneManAI : MonoBehaviour
 
         if (playerIsHiding)
         {
-            currentState = distanceToPlayer <= teleportDistance
-                ? State.Teleport
-                : State.Patrol;
+            currentState = State.Patrol; // Jika player bersembunyi, Stoneman Akan kembali ke patrol jika state sebelumnya bukan patrol. Jika sudah di patrol, tetap di patrol.
         }
         else if (distanceToPlayer <= chaseDistance)
             currentState = State.Chase;
@@ -136,6 +134,8 @@ public class StoneManAI : MonoBehaviour
 
     void TeleportBehaviour()
     {
+        if (mover.IsFrozen) return;
+
         teleportTimer += Time.fixedDeltaTime;
         if (teleportTimer < teleportCooldown) return;
         teleportTimer = 0f;

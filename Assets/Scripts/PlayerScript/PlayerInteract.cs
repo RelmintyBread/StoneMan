@@ -36,6 +36,7 @@ public class PlayerInteract : MonoBehaviour
         if (hit.collider != null)
         {
             detectedInteractable = hit.collider.GetComponent<IInteractable>();
+            Debug.Log("Raycast hit: " + hit.collider.name);
         }
 
         // Tangani perpindahan target, termasuk saat raycast kena collider non-interactable.
