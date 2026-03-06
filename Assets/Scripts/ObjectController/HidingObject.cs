@@ -12,17 +12,17 @@ public class HidingObject : MonoBehaviour, IInteractable
         bool hiddenInThisObject = playerHide.IsHidden && playerHide.CurrentHidingSpot == this;
         if (hiddenInThisObject)
         {
-            UIHandler.Instance?.HideInteractPrompt();
+            UIGameHandler.Instance?.HideInteractPrompt();
         }
         else
         {
-            UIHandler.Instance?.ShowInteractPrompt();
+            UIGameHandler.Instance?.ShowInteractPrompt();
         }
     }
 
     public void HideInteractUI()
     {
-        UIHandler.Instance?.HideInteractPrompt();
+        UIGameHandler.Instance?.HideInteractPrompt();
     }
 
     public void StartInteract()

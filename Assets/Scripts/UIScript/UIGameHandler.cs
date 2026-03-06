@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIHandler : MonoBehaviour
+public class UIGameHandler : MonoBehaviour
 {
-    public static UIHandler Instance { get; private set; }
+    public static UIGameHandler Instance { get; private set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [Header("Battery UI")]

@@ -1,11 +1,20 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NewGameScipt : MonoBehaviour
+public class MainMenuHandler : MonoBehaviour
 {
+    [Header("UI Panels")]
+    [SerializeField] private GameObject optionPanel;
+    [SerializeField] private GameObject mainMenuPanel;
+
+    void Start()
+    {
+        optionPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
+    }
     public void StartNewGame()
     {
-        PlayerPrefs.DeleteAll();   
+        PlayerPrefs.DeleteAll();
 
         SceneManager.LoadScene(1);
     }
@@ -28,5 +37,11 @@ public class NewGameScipt : MonoBehaviour
         Debug.Log("Quit Game");
 
         Application.Quit();
+    }
+
+    public void OpenOptionPanel()
+    {
+        optionPanel.SetActive(true);
+        mainMenuPanel.SetActive(false);
     }
 }
