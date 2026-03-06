@@ -14,10 +14,10 @@ TagManager:
   - Water
   - UI
   - Interactable
-  - TeleportZone
-  - ChaseZone
-  - Enemy
+  - Door
+  - DoorLeaf
   - Obstacle
+  - Enemy
   - 
   - 
   - 

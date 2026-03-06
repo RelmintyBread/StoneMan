@@ -140,7 +140,7 @@ public class FlashlightController : MonoBehaviour
             Collider2D hit = enemyBuffer[i];
             if (hit == null) continue;
 
-            StoneManAI enemy = hit.GetComponentInParent<StoneManAI>();
+            StoneManAI enemy = hit.GetComponent<StoneManAI>();
             if (enemy == null) continue;
 
             Vector2 toEnemy = (Vector2)enemy.transform.position - origin;
