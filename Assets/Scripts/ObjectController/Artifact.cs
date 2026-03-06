@@ -37,12 +37,12 @@ public class Artifact : MonoBehaviour, IInteractable
 
     public void ShowInteractUI()
     {
-        UIHandler.Instance?.ShowInteractPrompt();
+        UIGameHandler.Instance?.ShowInteractPrompt();
     }
 
     public void HideInteractUI()
     {
-        UIHandler.Instance?.HideInteractPrompt();
+        UIGameHandler.Instance?.HideInteractPrompt();
     }
 
     public void StartInteract()
@@ -78,7 +78,7 @@ public class Artifact : MonoBehaviour, IInteractable
 
     void HandleUpdateUI()
     {
-        if (UIHandler.Instance == null) return;
-        UIHandler.Instance.SetArtifactUI(collectedArtifacts, totalArtifactsRequired);
+        if (UIGameHandler.Instance == null) return;
+        UIGameHandler.Instance.SetArtifactUI(collectedArtifacts, totalArtifactsRequired);
     }
 }

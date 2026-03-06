@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseManager : MonoBehaviour
+public class PauseHandler : MonoBehaviour
 {
     public GameObject pausePanelUI;
     public GameObject gamePanelUI;

@@ -32,11 +32,11 @@ public class FlashlightController : MonoBehaviour
     private readonly HashSet<StoneManAI> detectedEnemies = new HashSet<StoneManAI>();
     private readonly List<StoneManAI> releaseBuffer = new List<StoneManAI>();
 
-    private UIHandler uiHandler;
+    private UIGameHandler uiHandler;
 
     void Start()
     {
-        uiHandler = UIHandler.Instance;
+        uiHandler = UIGameHandler.Instance;
         flashlightLight.enabled = false;
         currentBattery = batteryLife;
         HandleUpdateUI();
