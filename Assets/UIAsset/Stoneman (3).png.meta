@@ -1,0 +1,507 @@
+fileFormatVersion: 2
+guid: 8120ba780cf621544b9422522b081822
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8894111703135589742
+    second: Stoneman (3)_0
+  - first:
+      213: 6257749978290347479
+    second: Stoneman (3)_1
+  - first:
+      213: 6802723699387313676
+    second: Stoneman (3)_2
+  - first:
+      213: 8664832305301720686
+    second: Stoneman (3)_3
+  - first:
+      213: 2309103711955894684
+    second: Stoneman (3)_4
+  - first:
+      213: 3387567899063681716
+    second: Stoneman (3)_5
+  - first:
+      213: 2385707197477023202
+    second: Stoneman (3)_6
+  - first:
+      213: -7912693807100310033
+    second: Stoneman (3)_7
+  - first:
+      213: 5844253147675277841
+    second: Stoneman (3)_8
+  - first:
+      213: -6776448046177940364
+    second: Stoneman (3)_9
+  - first:
+      213: 6339389150893461272
+    second: Stoneman (3)_10
+  - first:
+      213: 196832504973245077
+    second: Stoneman (3)_11
+  - first:
+      213: 4372647618322234939
+    second: Stoneman (3)_12
+  - first:
+      213: -259667100460695284
+    second: Stoneman (3)_13
+  - first:
+      213: -8313251700250734467
+    second: Stoneman (3)_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Stoneman (3)_0
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 905
+        width: 31
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29a65fd6784c19480800000000000000
+      internalID: -8894111703135589742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_1
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 881
+        width: 105
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7dd5435437ef7d650800000000000000
+      internalID: 6257749978290347479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_2
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 870
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0eac178921286e50800000000000000
+      internalID: 6802723699387313676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_3
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 869
+        width: 16
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6e86dbc21baf3870800000000000000
+      internalID: 8664832305301720686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_4
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 870
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c91caa487959b0020800000000000000
+      internalID: 2309103711955894684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_5
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 811
+        width: 17
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b2053c5e0f030f20800000000000000
+      internalID: 3387567899063681716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_6
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 778
+        width: 44
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ede5bb5e0cbb1120800000000000000
+      internalID: 2385707197477023202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_7
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 757
+        width: 189
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fed4a5bd7e6703290800000000000000
+      internalID: -7912693807100310033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_8
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 687
+        width: 16
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11ab4ac0645fa1150800000000000000
+      internalID: 5844253147675277841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_9
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 688
+        width: 18
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47c8ca8b76835f1a0800000000000000
+      internalID: -6776448046177940364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_10
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 705
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81f48ff58d80af750800000000000000
+      internalID: 6339389150893461272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_11
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 688
+        width: 8
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59a3e23de1a4bb200800000000000000
+      internalID: 196832504973245077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_12
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 687
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3efd0277d3ceac30800000000000000
+      internalID: 4372647618322234939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_13
+      rect:
+        serializedVersion: 2
+        x: 382
+        y: 682
+        width: 181
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c014f2dd52a756cf0800000000000000
+      internalID: -259667100460695284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stoneman (3)_14
+      rect:
+        serializedVersion: 2
+        x: 861
+        y: 453
+        width: 420
+        height: 339
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d709426cf9561ac80800000000000000
+      internalID: -8313251700250734467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Stoneman (3)_0: -8894111703135589742
+      Stoneman (3)_1: 6257749978290347479
+      Stoneman (3)_10: 6339389150893461272
+      Stoneman (3)_11: 196832504973245077
+      Stoneman (3)_12: 4372647618322234939
+      Stoneman (3)_13: -259667100460695284
+      Stoneman (3)_14: -8313251700250734467
+      Stoneman (3)_2: 6802723699387313676
+      Stoneman (3)_3: 8664832305301720686
+      Stoneman (3)_4: 2309103711955894684
+      Stoneman (3)_5: 3387567899063681716
+      Stoneman (3)_6: 2385707197477023202
+      Stoneman (3)_7: -7912693807100310033
+      Stoneman (3)_8: 5844253147675277841
+      Stoneman (3)_9: -6776448046177940364
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
