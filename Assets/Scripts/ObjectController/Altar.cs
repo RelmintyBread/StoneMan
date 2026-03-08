@@ -23,7 +23,14 @@ public class Altar : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (Artifact.collectedArtifacts >= Artifact.totalArtifactsRequired)
+        PlayerInteract playerInteract = PlayerInteract.Instance;
+        if (playerInteract == null)
+        {
+            Debug.LogWarning("PlayerInteract not found.");
+            return;
+        }
+
+        if (playerInteract.collectedArtifacts >= playerInteract.totalArtifactsRequired)
         {
             Debug.Log("Altar Cutscene Activated");
         }

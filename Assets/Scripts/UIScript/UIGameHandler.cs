@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIGameHandler : MonoBehaviour
+public class UIGameHandler : MonoBehaviour, ISaveable
 {
     public static UIGameHandler Instance { get; private set; }
 
@@ -29,6 +29,9 @@ public class UIGameHandler : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Camera worldCamera;
     [SerializeField] private Vector3 interactPromptWorldOffset = new Vector3(0f, 2f, 0f);
+
+    [Header("Guide UI")]
+    [SerializeField] private GameObject guideUI;
 
     private bool isInteractPromptVisible;
 
@@ -114,5 +117,15 @@ public class UIGameHandler : MonoBehaviour
 
         isInteractPromptVisible = false;
         interactPrompt.gameObject.SetActive(false);
+    }
+
+    // ===== Save System Handlers =====
+    public void OnSave(SaveData data)
+    {
+        // Save any relevant UI state if needed
+    }
+    public void OnLoad(SaveData data)
+    {
+        // Load any relevant UI state if needed
     }
 }

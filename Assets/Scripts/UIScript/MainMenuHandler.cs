@@ -14,22 +14,22 @@ public class MainMenuHandler : MonoBehaviour
     }
     public void StartNewGame()
     {
-        PlayerPrefs.DeleteAll();
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.DeleteSave();
+        }
 
         SceneManager.LoadScene(1);
     }
 
     public void LoadSavedGame()
     {
-        if (PlayerPrefs.HasKey("SavedScene"))
+        if (SaveManager.Instance != null && SaveManager.Instance.LoadSavedGame())
         {
-            string sceneName = PlayerPrefs.GetString("SavedScene");
-            SceneManager.LoadScene(sceneName);
+            return;
         }
-        else
-        {
-            Debug.Log("No Save Found");
-        }
+
+        Debug.Log("No Save Found");
     }
 
     public void Quit()

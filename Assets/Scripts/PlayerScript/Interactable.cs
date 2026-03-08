@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public interface IInteractable
 {
     // Method untuk memulai interaksi, bisa digunakan untuk setup awal

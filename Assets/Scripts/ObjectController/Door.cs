@@ -1,7 +1,7 @@
 using UnityEngine;
 using Pathfinding;
 
-public class Door : MonoBehaviour, IInteractable
+public class Door : MonoBehaviour, IInteractable, ISaveable
 {
     [Header("References")]
     [SerializeField] private Transform engsel;
@@ -16,16 +16,26 @@ public class Door : MonoBehaviour, IInteractable
     [Tooltip("Radius area yang di-rescan A* setelah pintu bergerak. Sesuaikan dengan ukuran pintu.")]
     [SerializeField] private float graphUpdateRadius = 1.5f;
 
-    public bool isOpen = false;
-    private Collider2D doorCollider;
+    [SerializeField] private string uniqueID;   // UNIQUE ID per pintu, untuk sistem save
 
+    public bool isOpen = false;
     public bool IsOpen => isOpen;
+
+    private Collider2D doorCollider;
 
     void Awake()
     {
         doorCollider = GetComponent<Collider2D>();
+        SaveManager.RegisterSaveable(this);
     }
 
+    void Start()
+    {
+        // Pastikan layer awal sesuai dengan state pintu
+        gameObject.layer = LayerMask.NameToLayer(isOpen ? openLayerName : closedLayerName);
+    }
+
+    // ===== Interaction Handlers =====
     public void ShowInteractUI() { }
     public void HideInteractUI() { }
     public void StartInteract() => Interact();
@@ -51,5 +61,39 @@ public class Door : MonoBehaviour, IInteractable
     {
         var bounds = new Bounds(transform.position, Vector3.one * graphUpdateRadius * 2f);
         AstarPath.active.UpdateGraphs(bounds);
+    }
+
+    // ===== Save System Handlers =====
+    public void OnSave(SaveData data)
+    {
+        if (isOpen && !data.isDoorOpen.Contains(uniqueID))
+        {
+            data.isDoorOpen.Add(uniqueID);
+        }
+
+        if (!isOpen && data.isDoorOpen.Contains(uniqueID))
+        {
+            data.isDoorOpen.Remove(uniqueID);
+        }
+    }
+
+    public void OnLoad(SaveData data)
+    {
+        // if (data.doorStates != null && data.doorStates.TryGetValue(gameObject.name, out bool savedState))
+        // {
+        //     if (savedState != isOpen)
+        //     {
+        //         Interact(); // Toggle ke state yang benar
+        //     }
+        // }
+
+        if (data.isDoorOpen.Contains(uniqueID) && !isOpen)
+        {
+            Interact(); // Buka pintu jika seharusnya terbuka tapi saat ini tertutup
+        }
+        else if (!data.isDoorOpen.Contains(uniqueID) && isOpen)
+        {
+            Interact(); // Tutup pintu jika seharusnya tertutup tapi saat ini terbuka
+        }
     }
 }

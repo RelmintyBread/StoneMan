@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovement2D : MonoBehaviour
+public class PlayerMovement2D : MonoBehaviour, ISaveable
 {
     public float walkSpeed = 5f; //Speed ketika berjalan
     public float sprintSpeed = 10f; //speed ketika berlari
@@ -17,13 +17,22 @@ public class PlayerMovement2D : MonoBehaviour
 
     private bool isSprinting; //status sprint
     private bool isExhausted; //status exhausted (tidak bisa sprint)
+    private bool hasLoadedData;
     public float rotationSpeed = 720f;
+
+    void Awake()
+    {
+        SaveManager.RegisterSaveable(this);
+    }
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>(); //menyimpan dalam variable rb 
         playerInteract = GetComponent<PlayerInteract>();
-        currentStamina = maxStamina; //set stamina penuh saat mulai
+        if (!hasLoadedData)
+        {
+            currentStamina = maxStamina; //set stamina penuh saat mulai
+        }
         isExhausted = false;
         HandleUpdateUI();
     }
@@ -99,5 +108,19 @@ public class PlayerMovement2D : MonoBehaviour
         {
             UIGameHandler.Instance.SetStaminaUI(currentStamina, maxStamina);
         }
+    }
+
+    // ===== Save System Handlers =====
+    public void OnSave(SaveData data)
+    {
+        data.playerPosition = transform.position;
+        data.playerStamina = currentStamina;
+    }
+
+    public void OnLoad(SaveData data)
+    {
+        transform.position = data.playerPosition;
+        currentStamina = data.playerStamina;
+        hasLoadedData = true;
     }
 }

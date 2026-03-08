@@ -1,22 +1,30 @@
 using UnityEngine;
 
-public class Artifact : MonoBehaviour, IInteractable
+public class Artifact : MonoBehaviour, IInteractable, ISaveable
 {
+    // Unique identifier for this artifact
     [SerializeField] private string artifactID;   // UNIQUE ID per artifact
-    [SerializeField] private float requiredHoldTime = 3f;
 
+    // Interaction variables
+    [SerializeField] private float requiredHoldTime = 3f;
     private float currentHoldTime = 0f;
     private bool isHolding = false;
+    private bool isCollected = false;
 
-    public static int collectedArtifacts = 0;
-    public static int totalArtifactsRequired = 5;
+    // Static variables to track collected artifacts across all instances
+    private PlayerInteract playerInteract;
 
     private void Awake()
     {
-        // If already collected before, destroy immediately
-        if (PlayerPrefs.GetInt("Artifact_" + artifactID, 0) == 1)
+        playerInteract = PlayerInteract.Instance;
+        SaveManager.RegisterSaveable(this);
+    }
+
+    private void Start()
+    {
+        if (playerInteract == null)
         {
-            Destroy(gameObject);
+            playerInteract = PlayerInteract.Instance;
         }
     }
 
@@ -35,6 +43,7 @@ public class Artifact : MonoBehaviour, IInteractable
         HandleUpdateUI();
     }
 
+    // ===== Interaction Handlers =====
     public void ShowInteractUI()
     {
         UIGameHandler.Instance?.ShowInteractPrompt();
@@ -61,24 +70,49 @@ public class Artifact : MonoBehaviour, IInteractable
     {
         isHolding = false;
 
-        collectedArtifacts++;
+        if (isCollected)
+        {
+            return;
+        }
 
-        // SAVE that this specific artifact was collected
-        PlayerPrefs.SetInt("Artifact_" + artifactID, 1);
+        if (playerInteract == null)
+        {
+            playerInteract = PlayerInteract.Instance;
+            if (playerInteract == null)
+            {
+                return;
+            }
+        }
 
-        // Save updated count
-        PlayerPrefs.SetInt("CollectedArtifacts", collectedArtifacts);
+        playerInteract.collectedArtifacts++;
+        isCollected = true;
 
-        PlayerPrefs.Save();
+        Debug.Log("Artifact collected! Total: " + playerInteract.collectedArtifacts + "/" + playerInteract.totalArtifactsRequired);
 
-        Debug.Log("Artifact collected! Total: " + collectedArtifacts + "/" + totalArtifactsRequired);
-
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
+    // ===== Save System Handlers =====
+    public void OnSave(SaveData data)
+    {
+        if (isCollected && !data.isArtifactCollected.Contains(artifactID))
+        {
+            data.isArtifactCollected.Add(artifactID);
+        }
+    }
+    public void OnLoad(SaveData data)
+    {
+        if (data.isArtifactCollected.Contains(artifactID))
+        {
+            isCollected = true;
+            gameObject.SetActive(false);
+        }
+    }
+
+    // ===== UI Update Handler =====
     void HandleUpdateUI()
     {
-        if (UIGameHandler.Instance == null) return;
-        UIGameHandler.Instance.SetArtifactUI(collectedArtifacts, totalArtifactsRequired);
+        if (UIGameHandler.Instance == null || playerInteract == null) return;
+        UIGameHandler.Instance.SetArtifactUI(playerInteract.collectedArtifacts, playerInteract.totalArtifactsRequired);
     }
 }

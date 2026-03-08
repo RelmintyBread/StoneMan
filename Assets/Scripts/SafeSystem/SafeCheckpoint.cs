@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SavePoint2D : MonoBehaviour, IInteractable
 {
@@ -22,28 +21,19 @@ public class SavePoint2D : MonoBehaviour, IInteractable
     public void ShowInteractUI()
     {
         Debug.Log("Press E to Save");
+        UIGameHandler.Instance?.ShowInteractPrompt();
     }
 
     public void HideInteractUI()
     {
         // Hide UI if you have one
+        UIGameHandler.Instance?.HideInteractPrompt();
     }
 
+    [ContextMenu("Test Save")]
     private void SaveGame()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-
-        if (player == null)
-        {
-            Debug.LogWarning("Player not found!");
-            return;
-        }
-
-        PlayerPrefs.SetFloat("PlayerX", player.transform.position.x);
-        PlayerPrefs.SetFloat("PlayerY", player.transform.position.y);
-        PlayerPrefs.SetString("SavedScene", SceneManager.GetActiveScene().name);
-        
-        PlayerPrefs.Save();
+        SaveManager.Instance?.Save();
 
         Debug.Log("Game Saved!");
     }

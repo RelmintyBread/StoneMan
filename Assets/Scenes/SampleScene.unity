@@ -1796,6 +1796,7 @@ MonoBehaviour:
   closedLayerName: Door
   openLayerName: DoorLeaf
   graphUpdateRadius: 10
+  uniqueID: D7
   isOpen: 0
 --- !u!1 &321131091
 GameObject:
@@ -2521,6 +2522,7 @@ MonoBehaviour:
   closedLayerName: Door
   openLayerName: DoorLeaf
   graphUpdateRadius: 10
+  uniqueID: D8
   isOpen: 0
 --- !u!1 &433671399
 GameObject:
@@ -3457,6 +3459,7 @@ MonoBehaviour:
   closedLayerName: Door
   openLayerName: DoorLeaf
   graphUpdateRadius: 10
+  uniqueID: D4
   isOpen: 0
 --- !u!1 &585008912
 GameObject:
@@ -3576,7 +3579,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0
+  m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 0000000001ff09d7
@@ -5200,7 +5203,6 @@ GameObject:
   - component: {fileID: 923980474}
   - component: {fileID: 923980475}
   - component: {fileID: 923980476}
-  - component: {fileID: 923980477}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -5312,10 +5314,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   walkSpeed: 5
   sprintSpeed: 10
-  maxStamina: 6
+  maxStamina: 10
   currentStamina: 0
-  staminaDrainRate: 1
-  staminaRegenRate: 1
+  staminaDrainRate: 2
+  staminaRegenRate: 0.2
   rotationSpeed: 720
 --- !u!114 &923980472
 MonoBehaviour:
@@ -5335,6 +5337,8 @@ MonoBehaviour:
     m_Bits: 448
   currentFacingDirection: {x: 0, y: 1}
   playerHide: {fileID: 923980476}
+  collectedArtifacts: 0
+  totalArtifactsRequired: 5
 --- !u!114 &923980473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5445,18 +5449,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHide
   player: {fileID: 923980462}
---- !u!114 &923980477
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 923980462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b6980e86d6a4e942b78b48fe6fed971, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RestiorePlayerPosition
 --- !u!1 &926100898
 GameObject:
   m_ObjectHideFlags: 0
@@ -5775,6 +5767,7 @@ MonoBehaviour:
   closedLayerName: Door
   openLayerName: DoorLeaf
   graphUpdateRadius: 10
+  uniqueID: D3
   isOpen: 0
 --- !u!1 &975902502
 GameObject:
@@ -6052,6 +6045,7 @@ MonoBehaviour:
   closedLayerName: Door
   openLayerName: DoorLeaf
   graphUpdateRadius: 10
+  uniqueID: D5
   isOpen: 0
 --- !u!1 &1016157193
 GameObject:
@@ -6858,6 +6852,7 @@ MonoBehaviour:
   closedLayerName: Door
   openLayerName: DoorLeaf
   graphUpdateRadius: 10
+  uniqueID: D2
   isOpen: 0
 --- !u!212 &1155954613
 SpriteRenderer:
@@ -8270,6 +8265,7 @@ MonoBehaviour:
   closedLayerName: Door
   openLayerName: DoorLeaf
   graphUpdateRadius: 10
+  uniqueID: D6
   isOpen: 0
 --- !u!1 &1320900669
 GameObject:
@@ -9587,6 +9583,7 @@ MonoBehaviour:
   playerTransform: {fileID: 923980468}
   worldCamera: {fileID: 519420031}
   interactPromptWorldOffset: {x: 0, y: 2.5, z: 0}
+  guideUI: {fileID: 0}
 --- !u!1 &1718632287
 GameObject:
   m_ObjectHideFlags: 0
@@ -10100,6 +10097,7 @@ MonoBehaviour:
   closedLayerName: Door
   openLayerName: DoorLeaf
   graphUpdateRadius: 10
+  uniqueID: D1
   isOpen: 0
 --- !u!212 &1821859812
 SpriteRenderer:

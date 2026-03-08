@@ -41,6 +41,12 @@ public class PauseHandler : MonoBehaviour
 
     public void MainMenu()
     {
+        // Clear pending load data to prevent old data from being applied on next load
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.ClearPendingLoadData();
+        }
+
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
     }

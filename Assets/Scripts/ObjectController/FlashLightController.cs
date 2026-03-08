@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections.Generic;
-public class FlashlightController : MonoBehaviour
+public class FlashlightController : MonoBehaviour, ISaveable
 {
     // ===== On Off =====
     private bool isHeld;
@@ -33,12 +33,21 @@ public class FlashlightController : MonoBehaviour
     private readonly List<StoneManAI> releaseBuffer = new List<StoneManAI>();
 
     private UIGameHandler uiHandler;
+    private bool hasLoadedData;
+
+    void Awake()
+    {
+        SaveManager.RegisterSaveable(this);
+    }
 
     void Start()
     {
         uiHandler = UIGameHandler.Instance;
         flashlightLight.enabled = false;
-        currentBattery = batteryLife;
+        if (!hasLoadedData)
+        {
+            currentBattery = batteryLife;
+        }
         HandleUpdateUI();
     }
 
@@ -60,25 +69,12 @@ public class FlashlightController : MonoBehaviour
         HandleFreezeEnemy();
     }
 
-    void HandleFlashlight()
+    void OnDisable()
     {
-        bool shouldBeOn = isHeld && HasBattery();
-
-        if (shouldBeOn && !isOn)
-        {
-            TurnOn();
-        }
-        else if (!shouldBeOn && isOn)
-        {
-            TurnOff();
-        }
+        ReleaseAllFrozenEnemies();
     }
 
-    bool HasBattery()
-    {
-        return currentBattery > 0;
-    }
-
+    // ===== Flashlight Handlers =====
     void TurnOn()
     {
         // enable light
@@ -93,6 +89,22 @@ public class FlashlightController : MonoBehaviour
         flashlightLight.enabled = false;
         isOn = false;
     }
+
+    // ===== Main Handlers =====
+    void HandleFlashlight()
+    {
+        bool shouldBeOn = isHeld && HasBattery();
+
+        if (shouldBeOn && !isOn)
+        {
+            TurnOn();
+        }
+        else if (!shouldBeOn && isOn)
+        {
+            TurnOff();
+        }
+    }
+
     void HandleBattery()
     {
         if (isOn)
@@ -184,21 +196,6 @@ public class FlashlightController : MonoBehaviour
         }
     }
 
-    void ReleaseAllFrozenEnemies()
-    {
-        if (frozenEnemies.Count == 0) return;
-
-        foreach (StoneManAI enemy in frozenEnemies)
-        {
-            if (enemy != null)
-            {
-                enemy.SetFrozen(false);
-            }
-        }
-
-        frozenEnemies.Clear();
-    }
-
     void HandleFacingLight()
     {
         if (!isOn || flashlightLight == null) return;
@@ -221,6 +218,36 @@ public class FlashlightController : MonoBehaviour
 
     }
 
+    // ===== ISaveable Implementation =====
+    public void OnSave(SaveData data)
+    {
+        // Save current battery level
+        data.flashlightBattery = currentBattery;
+    }
+
+    public void OnLoad(SaveData data)
+    {
+        // Load current battery level
+        currentBattery = data.flashlightBattery;
+        hasLoadedData = true;
+    }
+
+    // ===== Helper Methods =====
+    void ReleaseAllFrozenEnemies()
+    {
+        if (frozenEnemies.Count == 0) return;
+
+        foreach (StoneManAI enemy in frozenEnemies)
+        {
+            if (enemy != null)
+            {
+                enemy.SetFrozen(false);
+            }
+        }
+
+        frozenEnemies.Clear();
+    }
+
     public void RechargeBattery(float amount)
     {
         currentBattery += amount;
@@ -230,8 +257,10 @@ public class FlashlightController : MonoBehaviour
         }
     }
 
-    void OnDisable()
+    bool HasBattery()
     {
-        ReleaseAllFrozenEnemies();
+        return currentBattery > 0;
     }
+
+
 }

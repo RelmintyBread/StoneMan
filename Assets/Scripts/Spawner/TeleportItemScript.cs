@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class ItemSpawnManager : MonoBehaviour
+public class ItemSpawnManager : MonoBehaviour, ISaveable
 {
     public static ItemSpawnManager Instance;
 
@@ -11,12 +11,20 @@ public class ItemSpawnManager : MonoBehaviour
     [Header("Scene Objects")]
     public Artifact[] artifacts;
     public Battery[] batteries;
+    private readonly List<int> artifactSpawnIndexes = new List<int>();
+    private readonly List<int> batterySpawnIndexes = new List<int>();
+    private bool spawnGenerated;
 
     void Awake()
     {
-        Instance = this;
+        SaveManager.RegisterSaveable(this);
 
-        if (!PlayerPrefs.HasKey("SpawnGenerated"))
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        if (!spawnGenerated)
         {
             GenerateSpawn();
         }
@@ -32,46 +40,53 @@ public class ItemSpawnManager : MonoBehaviour
             return;
         }
 
+        artifactSpawnIndexes.Clear();
+        batterySpawnIndexes.Clear();
+
         List<int> indexes = new List<int>();
 
         for (int i = 0; i < spawnPoints.Length; i++)
+        {
             indexes.Add(i);
+        }
 
         Shuffle(indexes);
 
         int counter = 0;
 
-        // Assign artifact spawn indices
         for (int i = 0; i < artifacts.Length; i++)
         {
-            PlayerPrefs.SetInt("ArtifactSpawn_" + i, indexes[counter]);
+            artifactSpawnIndexes.Add(indexes[counter]);
             counter++;
         }
 
-        // Assign battery spawn indices
         for (int i = 0; i < batteries.Length; i++)
         {
-            PlayerPrefs.SetInt("BatterySpawn_" + i, indexes[counter]);
+            batterySpawnIndexes.Add(indexes[counter]);
             counter++;
         }
 
-        PlayerPrefs.SetInt("SpawnGenerated", 1);
-        PlayerPrefs.Save();
+        spawnGenerated = true;
     }
 
     void AssignPositions()
     {
-        // Move artifacts
+        if (artifactSpawnIndexes.Count != artifacts.Length || batterySpawnIndexes.Count != batteries.Length)
+        {
+            return;
+        }
+
         for (int i = 0; i < artifacts.Length; i++)
         {
-            int index = PlayerPrefs.GetInt("ArtifactSpawn_" + i);
+            int index = artifactSpawnIndexes[i];
+            if (index < 0 || index >= spawnPoints.Length) continue;
             artifacts[i].transform.position = spawnPoints[index].position;
         }
 
-        // Move batteries
         for (int i = 0; i < batteries.Length; i++)
         {
-            int index = PlayerPrefs.GetInt("BatterySpawn_" + i);
+            int index = batterySpawnIndexes[i];
+            if (index < 0 || index >= spawnPoints.Length) continue;
             batteries[i].transform.position = spawnPoints[index].position;
         }
     }
@@ -85,5 +100,51 @@ public class ItemSpawnManager : MonoBehaviour
             list[i] = list[rand];
             list[rand] = temp;
         }
+    }
+
+    // ===== Save System Handlers =====
+    public void OnSave(SaveData data)
+    {
+        data.spawnGenerated = spawnGenerated;
+        data.artifactPositions.Clear();
+        data.batteryPositions.Clear();
+
+        for (int i = 0; i < artifactSpawnIndexes.Count; i++)
+        {
+            data.artifactPositions.Add(artifactSpawnIndexes[i]);
+        }
+
+        for (int i = 0; i < batterySpawnIndexes.Count; i++)
+        {
+            data.batteryPositions.Add(batterySpawnIndexes[i]);
+        }
+    }
+
+    public void OnLoad(SaveData data)
+    {
+        artifactSpawnIndexes.Clear();
+        batterySpawnIndexes.Clear();
+
+        if (!data.spawnGenerated)
+        {
+            spawnGenerated = false;
+            GenerateSpawn();
+            AssignPositions();
+            return;
+        }
+
+        spawnGenerated = true;
+
+        for (int i = 0; i < data.artifactPositions.Count; i++)
+        {
+            artifactSpawnIndexes.Add(data.artifactPositions[i]);
+        }
+
+        for (int i = 0; i < data.batteryPositions.Count; i++)
+        {
+            batterySpawnIndexes.Add(data.batteryPositions[i]);
+        }
+
+        AssignPositions();
     }
 }

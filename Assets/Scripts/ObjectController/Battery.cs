@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Battery : MonoBehaviour, IInteractable
+public class Battery : MonoBehaviour, IInteractable, ISaveable
 {
     [Header("Battery Settings")]
     [SerializeField] private string uniqueID;   // IMPORTANT: Set different ID per battery in Inspector
@@ -10,14 +10,11 @@ public class Battery : MonoBehaviour, IInteractable
 
     private float currentHoldTime = 0f;
     private bool isHolding = false;
+    private bool isCollected = false;
 
-    void Start()
+    void Awake()
     {
-        // If battery already taken before → destroy immediately
-        if (PlayerPrefs.GetInt("Battery_" + uniqueID, 0) == 1)
-        {
-            Destroy(gameObject);
-        }
+        SaveManager.RegisterSaveable(this);
     }
 
     void Update()
@@ -33,6 +30,7 @@ public class Battery : MonoBehaviour, IInteractable
         }
     }
 
+    // ===== Interaction Handlers =====
     public void ShowInteractUI()
     {
         UIGameHandler.Instance?.ShowInteractPrompt();
@@ -62,11 +60,26 @@ public class Battery : MonoBehaviour, IInteractable
         Debug.Log("Battery picked!");
 
         flashlightController.RechargeBattery(batteryAmount);
+        isCollected = true;
 
-        // SAVE THAT THIS BATTERY IS TAKEN
-        PlayerPrefs.SetInt("Battery_" + uniqueID, 1);
-        PlayerPrefs.Save();
+        gameObject.SetActive(false);
+    }
 
-        Destroy(gameObject);
+    // ===== Saveable Implementation =====
+    public void OnSave(SaveData data)
+    {
+        if (isCollected && !data.isBatteryCollected.Contains(uniqueID))
+        {
+            data.isBatteryCollected.Add(uniqueID);
+        }
+    }
+
+    public void OnLoad(SaveData data)
+    {
+        if (data.isBatteryCollected.Contains(uniqueID))
+        {
+            isCollected = true;
+            gameObject.SetActive(false);
+        }
     }
 }
