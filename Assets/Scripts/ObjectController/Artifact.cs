@@ -58,6 +58,7 @@ public class Artifact : MonoBehaviour, IInteractable, ISaveable
     {
         isHolding = true;
         currentHoldTime = 0f;
+        
     }
 
     public void StopInteract()
@@ -85,6 +86,7 @@ public class Artifact : MonoBehaviour, IInteractable, ISaveable
         }
 
         playerInteract.collectedArtifacts++;
+            CutsceneManager.Instance?.TryPlayCutscene(playerInteract.collectedArtifacts);
         isCollected = true;
 
         Debug.Log("Artifact collected! Total: " + playerInteract.collectedArtifacts + "/" + playerInteract.totalArtifactsRequired);
@@ -115,4 +117,5 @@ public class Artifact : MonoBehaviour, IInteractable, ISaveable
         if (UIGameHandler.Instance == null || playerInteract == null) return;
         UIGameHandler.Instance.SetArtifactUI(playerInteract.collectedArtifacts, playerInteract.totalArtifactsRequired);
     }
+
 }
