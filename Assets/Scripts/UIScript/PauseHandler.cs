@@ -15,6 +15,11 @@ public class PauseHandler : MonoBehaviour
 
     void Update()
     {
+        if (UIGameHandler.Instance != null && UIGameHandler.Instance.IsGameOver)
+        {
+            return;
+        }
+
         // Press ESC to toggle pause
         if (Input.GetKeyDown(KeyCode.Escape))
         {

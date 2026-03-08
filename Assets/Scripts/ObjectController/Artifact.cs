@@ -11,21 +11,9 @@ public class Artifact : MonoBehaviour, IInteractable, ISaveable
     private bool isHolding = false;
     private bool isCollected = false;
 
-    // Static variables to track collected artifacts across all instances
-    private PlayerInteract playerInteract;
-
     private void Awake()
     {
-        playerInteract = PlayerInteract.Instance;
         SaveManager.RegisterSaveable(this);
-    }
-
-    private void Start()
-    {
-        if (playerInteract == null)
-        {
-            playerInteract = PlayerInteract.Instance;
-        }
     }
 
     void Update()
@@ -33,14 +21,13 @@ public class Artifact : MonoBehaviour, IInteractable, ISaveable
         if (isHolding)
         {
             currentHoldTime += Time.deltaTime;
+            UIGameHandler.Instance?.UpdateHoldInteractionProgress(currentHoldTime / requiredHoldTime);
 
             if (currentHoldTime >= requiredHoldTime)
             {
                 Interact();
             }
         }
-
-        HandleUpdateUI();
     }
 
     // ===== Interaction Handlers =====
@@ -58,38 +45,37 @@ public class Artifact : MonoBehaviour, IInteractable, ISaveable
     {
         isHolding = true;
         currentHoldTime = 0f;
-        
+        UIGameHandler.Instance?.BeginHoldInteraction();
     }
 
     public void StopInteract()
     {
         isHolding = false;
         currentHoldTime = 0f;
+        UIGameHandler.Instance?.EndHoldInteraction();
     }
 
     public void Interact()
     {
         isHolding = false;
+        UIGameHandler.Instance?.EndHoldInteraction(false);
 
         if (isCollected)
         {
             return;
         }
 
-        if (playerInteract == null)
+        ArtifactProgressManager progress = ArtifactProgressManager.Instance;
+        if (progress == null)
         {
-            playerInteract = PlayerInteract.Instance;
-            if (playerInteract == null)
-            {
-                return;
-            }
+            Debug.LogWarning("ArtifactProgressManager not found.");
+            return;
         }
 
-        playerInteract.collectedArtifacts++;
-            CutsceneManager.Instance?.TryPlayCutscene(playerInteract.collectedArtifacts);
+        progress.CollectArtifact();
         isCollected = true;
 
-        Debug.Log("Artifact collected! Total: " + playerInteract.collectedArtifacts + "/" + playerInteract.totalArtifactsRequired);
+        Debug.Log("Artifact collected! Total: " + progress.CollectedArtifacts + "/" + progress.TotalArtifactsRequired);
 
         gameObject.SetActive(false);
     }
@@ -108,14 +94,11 @@ public class Artifact : MonoBehaviour, IInteractable, ISaveable
         {
             isCollected = true;
             gameObject.SetActive(false);
+            return;
         }
-    }
-
-    // ===== UI Update Handler =====
-    void HandleUpdateUI()
-    {
-        if (UIGameHandler.Instance == null || playerInteract == null) return;
-        UIGameHandler.Instance.SetArtifactUI(playerInteract.collectedArtifacts, playerInteract.totalArtifactsRequired);
+        
+        isCollected = false;
+        gameObject.SetActive(true);
     }
 
 }

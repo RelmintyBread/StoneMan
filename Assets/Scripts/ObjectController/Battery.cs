@@ -22,6 +22,7 @@ public class Battery : MonoBehaviour, IInteractable, ISaveable
         if (isHolding)
         {
             currentHoldTime += Time.deltaTime;
+            UIGameHandler.Instance?.UpdateHoldInteractionProgress(currentHoldTime / requiredHoldTime);
 
             if (currentHoldTime >= requiredHoldTime)
             {
@@ -45,17 +46,20 @@ public class Battery : MonoBehaviour, IInteractable, ISaveable
     {
         isHolding = true;
         currentHoldTime = 0f;
+        UIGameHandler.Instance?.BeginHoldInteraction();
     }
 
     public void StopInteract()
     {
         isHolding = false;
         currentHoldTime = 0f;
+        UIGameHandler.Instance?.EndHoldInteraction();
     }
 
     public void Interact()
     {
         isHolding = false;
+        UIGameHandler.Instance?.EndHoldInteraction(false);
 
         Debug.Log("Battery picked!");
 

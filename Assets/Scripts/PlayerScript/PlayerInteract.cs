@@ -1,14 +1,11 @@
 using UnityEngine;
 
-public class PlayerInteract : MonoBehaviour, ISaveable
+public class PlayerInteract : MonoBehaviour
 {
     public float interactDistance = 6f;
     public LayerMask interactableLayer;
     public Vector2 currentFacingDirection = Vector2.up;
     public PlayerHide playerHide;
-
-    public int collectedArtifacts = 0; // Track jumlah artifact yang dikumpulkan
-    public int totalArtifactsRequired = 5; // Total artifact yang dibutuhkan untuk menang
 
     private IInteractable currentInteractable; // Menyimpan target saat ini
     private bool isInteractPressed;
@@ -17,7 +14,6 @@ public class PlayerInteract : MonoBehaviour, ISaveable
 
     void Awake()
     {
-        SaveManager.RegisterSaveable(this);
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -38,8 +34,8 @@ public class PlayerInteract : MonoBehaviour, ISaveable
         {
             if (currentInteractable != null)
             {
-                currentInteractable.HideInteractUI();
                 if (isInteractPressed) currentInteractable.StopInteract();
+                currentInteractable.HideInteractUI();
                 currentInteractable = null;
             }
             return;
@@ -59,8 +55,8 @@ public class PlayerInteract : MonoBehaviour, ISaveable
         {
             if (currentInteractable != null)
             {
-                currentInteractable.HideInteractUI(); // Sembunyikan UI
                 if (isInteractPressed) currentInteractable.StopInteract();
+                currentInteractable.HideInteractUI(); // Sembunyikan UI
             }
 
             currentInteractable = detectedInteractable;
@@ -106,16 +102,5 @@ public class PlayerInteract : MonoBehaviour, ISaveable
         {
             currentInteractable.StopInteract();
         }
-    }
-
-    // ===== Save System Handlers =====
-    public void OnSave(SaveData data)
-    {
-        data.collectedArtifactsCount = collectedArtifacts;
-    }
-
-    public void OnLoad(SaveData data)
-    {
-        collectedArtifacts = data.collectedArtifactsCount;
     }
 }

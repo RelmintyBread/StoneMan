@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
-public class UIGameHandler : MonoBehaviour, ISaveable
+public class UIGameHandler : MonoBehaviour
 {
     public static UIGameHandler Instance { get; private set; }
+    public bool IsGameOver { get; private set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [Header("Battery UI")]
@@ -30,10 +32,16 @@ public class UIGameHandler : MonoBehaviour, ISaveable
     [SerializeField] private Camera worldCamera;
     [SerializeField] private Vector3 interactPromptWorldOffset = new Vector3(0f, 2f, 0f);
 
-    [Header("Guide UI")]
-    [SerializeField] private GameObject guideUI;
+    [Header("Hold Interact UI")]
+    [SerializeField] private GameObject interactProgressPanel;
+    [SerializeField] private Image interactProgressFill;
+    [SerializeField] private RectTransform interactProgressRect;
+
+    [Header("Game Over UI")]
+    [SerializeField] private GameObject gameOverPanel;
 
     private bool isInteractPromptVisible;
+    private bool isHoldInteractionActive;
 
     private void Awake()
     {
@@ -63,11 +71,33 @@ public class UIGameHandler : MonoBehaviour, ISaveable
         {
             interactPrompt.gameObject.SetActive(false);
         }
+
+        if (interactProgressPanel != null)
+        {
+            interactProgressPanel.SetActive(false);
+        }
+
+        if (interactProgressRect == null && interactProgressPanel != null)
+        {
+            interactProgressRect = interactProgressPanel.GetComponent<RectTransform>();
+        }
+
+        if (interactProgressFill != null)
+        {
+            interactProgressFill.fillAmount = 0f;
+        }
+
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
+
+        IsGameOver = false;
     }
 
     private void LateUpdate()
     {
-        if (!isInteractPromptVisible || interactPrompt == null || playerTransform == null || worldCamera == null)
+        if (playerTransform == null || worldCamera == null)
         {
             if (worldCamera == null)
             {
@@ -77,7 +107,17 @@ public class UIGameHandler : MonoBehaviour, ISaveable
         }
 
         Vector3 worldPos = playerTransform.position + interactPromptWorldOffset;
-        interactPrompt.position = worldCamera.WorldToScreenPoint(worldPos);
+        Vector3 screenPos = worldCamera.WorldToScreenPoint(worldPos);
+
+        if (isInteractPromptVisible && interactPrompt != null)
+        {
+            interactPrompt.position = screenPos;
+        }
+
+        if (isHoldInteractionActive && interactProgressRect != null)
+        {
+            interactProgressRect.position = screenPos;
+        }
     }
 
     public void SetBatteryUI(float batteryAmount, float maxBatteryAmount)
@@ -106,6 +146,7 @@ public class UIGameHandler : MonoBehaviour, ISaveable
     public void ShowInteractPrompt()
     {
         if (interactPrompt == null) return;
+        if (isHoldInteractionActive) return;
 
         isInteractPromptVisible = true;
         interactPrompt.gameObject.SetActive(true);
@@ -119,13 +160,89 @@ public class UIGameHandler : MonoBehaviour, ISaveable
         interactPrompt.gameObject.SetActive(false);
     }
 
-    // ===== Save System Handlers =====
-    public void OnSave(SaveData data)
+    public void BeginHoldInteraction()
     {
-        // Save any relevant UI state if needed
+        isHoldInteractionActive = true;
+        HideInteractPrompt();
+
+        if (interactProgressPanel != null)
+        {
+            interactProgressPanel.SetActive(true);
+        }
+
+        if (interactProgressFill != null)
+        {
+            interactProgressFill.fillAmount = 0f;
+        }
     }
-    public void OnLoad(SaveData data)
+
+    public void UpdateHoldInteractionProgress(float progress01)
     {
-        // Load any relevant UI state if needed
+        if (!isHoldInteractionActive) return;
+        if (interactProgressFill == null) return;
+
+        interactProgressFill.fillAmount = Mathf.Clamp01(progress01);
+    }
+
+    public void EndHoldInteraction(bool restorePrompt = true)
+    {
+        isHoldInteractionActive = false;
+
+        if (interactProgressPanel != null)
+        {
+            interactProgressPanel.SetActive(false);
+        }
+
+        if (interactProgressFill != null)
+        {
+            interactProgressFill.fillAmount = 0f;
+        }
+
+        if (restorePrompt)
+        {
+            ShowInteractPrompt();
+        }
+    }
+
+    public void ShowGameOverPanel()
+    {
+        if (IsGameOver) return;
+
+        IsGameOver = true;
+        EndHoldInteraction(false);
+        HideInteractPrompt();
+
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
+
+        Time.timeScale = 0f;
+    }
+
+    public void RestartFromCheckpoint()
+    {
+        IsGameOver = false;
+        Time.timeScale = 1f;
+
+        if (SaveManager.Instance != null && SaveManager.Instance.Load())
+        {
+            return;
+        }
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void BackToMainMenu()
+    {
+        IsGameOver = false;
+
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.ClearPendingLoadData();
+        }
+
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(0);
     }
 }

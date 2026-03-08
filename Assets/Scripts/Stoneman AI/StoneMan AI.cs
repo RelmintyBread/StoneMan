@@ -43,8 +43,10 @@ public class StoneManAI : MonoBehaviour
     private State previousState;
     private StoneManMover mover;
     private StoneManPatrol patrol;
+    private PlayerLife playerLife;
     private float distanceToPlayer;
     private float teleportTimer;
+    private bool hasBustedPlayer;
 
     // ─────────────────────────────────────────────
     //  UNITY LIFECYCLE
@@ -62,12 +64,18 @@ public class StoneManAI : MonoBehaviour
             {
                 player = found.transform;
                 hide = found.GetComponent<PlayerHide>();
+                playerLife = found.GetComponent<PlayerLife>();
             }
+        }
+        else
+        {
+            playerLife = player.GetComponent<PlayerLife>();
         }
 
         RefreshDistance();
         previousState = State.Patrol;
         UpdateState();
+        hasBustedPlayer = false;
     }
 
     void Update()
@@ -77,7 +85,7 @@ public class StoneManAI : MonoBehaviour
         RefreshDistance();
         UpdateState();
 
-        if (distanceToPlayer <= bustedDistance)
+        if (!hasBustedPlayer && distanceToPlayer <= bustedDistance)
             OnPlayerBusted();
     }
 
@@ -194,8 +202,20 @@ public class StoneManAI : MonoBehaviour
 
     void OnPlayerBusted()
     {
+        if (hasBustedPlayer) return;
+
+        hasBustedPlayer = true;
         Debug.Log("Player busted by StoneMan!");
-        // TODO: trigger game-over / damage logic here
+        patrol.StopPatrol();
+        mover.SetFrozen(true);
+
+        if (playerLife != null)
+        {
+            playerLife.Die();
+            return;
+        }
+
+        UIGameHandler.Instance?.ShowGameOverPanel();
     }
 
     /// <summary>Freeze / unfreeze dari luar (misal cutscene).</summary>
