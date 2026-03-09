@@ -43,6 +43,8 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
         moveInput.y = Input.GetAxisRaw("Vertical");
         moveInput = moveInput.normalized;
 
+        GuideManager.Instance?.NotifyMovementInput(moveInput);
+
         if (moveInput.sqrMagnitude > 0f && playerInteract != null)
         {
             playerInteract.SetFacingDirection(moveInput);

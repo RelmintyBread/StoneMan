@@ -37,6 +37,7 @@ public class PlayerInteract : MonoBehaviour
                 if (isInteractPressed) currentInteractable.StopInteract();
                 currentInteractable.HideInteractUI();
                 currentInteractable = null;
+                GuideManager.Instance?.NotifyInteractableDetected(null);
             }
             return;
         }
@@ -65,6 +66,8 @@ public class PlayerInteract : MonoBehaviour
             {
                 currentInteractable.ShowInteractUI();
             }
+
+            GuideManager.Instance?.NotifyInteractableDetected(currentInteractable);
         }
     }
 
@@ -89,6 +92,7 @@ public class PlayerInteract : MonoBehaviour
         if (currentInteractable != null)
         {
             currentInteractable.StartInteract();
+            GuideManager.Instance?.NotifyInteractPressed(currentInteractable);
         }
     }
 

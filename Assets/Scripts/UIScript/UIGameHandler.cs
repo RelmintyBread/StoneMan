@@ -225,7 +225,7 @@ public class UIGameHandler : MonoBehaviour
         IsGameOver = false;
         Time.timeScale = 1f;
 
-        if (SaveManager.Instance != null && SaveManager.Instance.Load())
+        if (SaveManager.Instance != null && SaveManager.Instance.LoadSavedGame())
         {
             return;
         }

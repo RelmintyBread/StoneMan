@@ -33,6 +33,10 @@ public class InputHandler : MonoBehaviour
         {
             bool isHeld = Input.GetMouseButton(0);
             flashlightController.SetFlashlightHeld(isHeld);
+            if (isHeld)
+            {
+                GuideManager.Instance?.NotifyFlashlightUsed();
+            }
         }
     }
 }
