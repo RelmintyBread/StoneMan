@@ -18,8 +18,8 @@ public class MainMenuHandler : MonoBehaviour
         {
             SaveManager.Instance.DeleteSave();
         }
-
         SceneManager.LoadScene(1);
+
     }
 
     public void LoadSavedGame()

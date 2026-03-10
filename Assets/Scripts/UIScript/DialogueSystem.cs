@@ -1,13 +1,17 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
+    [Header ("UI References")]
     public TextMeshProUGUI dialogueText;
+    public Image dialogueBorder;
 
+    [Header("Typing Settings")]
     public float typingSpeed = 0.03f;
 
     public string[][] dialogues;
@@ -15,7 +19,7 @@ public class DialogueManager : MonoBehaviour
     private int currentLine;
     private string[] currentDialogue;
 
-    private bool isTyping;
+    private bool isTyping = false;
 
     private void Awake()
     {
@@ -25,10 +29,10 @@ public class DialogueManager : MonoBehaviour
         {
             new string[]
             {
-                "🎵Hark now, ye travelers of the winding way",
-                "🎵And hear a tale of night turned into day.",
-                "🎵Until there rose, with eagle’s eye and hand of steel,",
-                "🎵Marcus Aurelius, to whom the fates did kneel.",
+                "♫ Hark now, ye travelers of the winding way",
+                "♫ And hear a tale of night turned into day.",
+                "♫ Until there rose, with eagle’s eye and hand of steel,",
+                "♫ Marcus Aurelius, to whom the fates did kneel.",
                 "<color=red>.....</color>",
                 "<color=red>Boy, such a splendid voice you have, the Four Crest isn’t it?</color>",
                 "o-ouh...ummm...L-lady Fornsword?! Y-yem mit is, M’Lady...",
@@ -90,11 +94,11 @@ public class DialogueManager : MonoBehaviour
                 "<color=red>That....(cough)....will be nice</color>",
                 "(strengthen self)",
                 "(strengthen self)",
-                "🎵So drink to the Lady, so noble and bright,",
-                "🎵Who keepeth the darkness away from our sight.",
-                "🎵May her name be whispered while the stars still shine,",
+                "♫ So drink to the Lady, so noble and bright,",
+                "♫ Who keepeth the darkness away from our sight.",
+                "♫ May her name be whispered while the stars still shine,",
                 "<color=red>(smiling, breath stopping, the body are souless...now)</color>",
-                "🎵The Crimson Lady—the soul of the line.",
+                "♫ The Crimson Lady—the soul of the line.",
                 "(crying, can’t holding tear anymore)",
                 "why.....",
                 "(scream) WHYYYYY....????!!!!",
@@ -152,6 +156,8 @@ IEnumerator TypeLine()
 
     string line = currentDialogue[currentLine];
 
+    UpdateBorderColor(line);
+
     for (int i = 0; i < line.Length; i++)
     {
         if (line[i] == '<') // Detect start of rich text tag
@@ -186,4 +192,24 @@ IEnumerator TypeLine()
 
         StartCoroutine(TypeLine());
     }
+
+void UpdateBorderColor(string line)
+{
+    if (dialogueBorder == null) return;
+
+    Color targetColor = Color.orange;
+
+    if (line.Contains("<color=red>"))
+    {
+        targetColor = Color.red;
+    }
+    else if (line.Contains("<color=gray>"))
+    {
+        targetColor = Color.gray;
+    }
+
+    if (dialogueBorder != null)
+        dialogueBorder.color = targetColor;
+
+}
 }
