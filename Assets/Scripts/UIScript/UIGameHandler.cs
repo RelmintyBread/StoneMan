@@ -40,6 +40,8 @@ public class UIGameHandler : MonoBehaviour
     [Header("Game Over UI")]
     [SerializeField] private GameObject gameOverPanel;
 
+    [SerializeField] private GameObject saveNotificationUI;
+
     private bool isInteractPromptVisible;
     private bool isHoldInteractionActive;
 
@@ -140,7 +142,7 @@ public class UIGameHandler : MonoBehaviour
     {
         this.collectedArtifacts = collectedArtifacts;
         this.totalArtifactsRequired = totalArtifactsRequired;
-        artifactText.text = collectedArtifacts.ToString() + " / " + totalArtifactsRequired.ToString();
+        artifactText.text = collectedArtifacts.ToString();
     }
 
     public void ShowInteractPrompt()
@@ -244,5 +246,18 @@ public class UIGameHandler : MonoBehaviour
 
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
+    }
+
+    public void ShowSaveConfirmation()
+    {
+        // Implement a simple save confirmation UI if desired
+        saveNotificationUI.SetActive(true);
+        Invoke(nameof(HideSaveConfirmation), 2f); // Hide after 2 seconds
+        Debug.Log("Game Saved!");
+    }
+
+    private void HideSaveConfirmation()
+    {
+        saveNotificationUI.SetActive(false);
     }
 }
