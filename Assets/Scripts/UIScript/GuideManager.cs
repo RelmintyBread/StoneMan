@@ -33,7 +33,6 @@ public class GuideManager : MonoBehaviour
         }
 
         Instance = this;
-        LoadGuideState();
     }
 
     private void Start()
@@ -47,7 +46,6 @@ public class GuideManager : MonoBehaviour
         if (moveInput.sqrMagnitude <= 0.001f) return;
 
         isMovementDone = true;
-        SaveBool(KeyMovementDone, true);
         RefreshGuideUI();
     }
 
@@ -56,7 +54,6 @@ public class GuideManager : MonoBehaviour
         if (isGuideCompleted || !isMovementDone || isFlashlightDone) return;
 
         isFlashlightDone = true;
-        SaveBool(KeyFlashlightDone, true);
         RefreshGuideUI();
     }
 
@@ -76,7 +73,6 @@ public class GuideManager : MonoBehaviour
         if (!isMovementDone || !isFlashlightDone || isInteractDone) return;
 
         isInteractDone = true;
-        SaveBool(KeyInteractDone, true);
         RefreshGuideUI();
     }
 
@@ -85,7 +81,6 @@ public class GuideManager : MonoBehaviour
         if (isGuideCompleted || !isInteractDone || isSaveDone) return;
 
         isSaveDone = true;
-        SaveBool(KeySaveDone, true);
         RefreshGuideUI();
     }
 
@@ -99,7 +94,6 @@ public class GuideManager : MonoBehaviour
         PlayerPrefs.DeleteKey(KeySaveDone);
         PlayerPrefs.Save();
 
-        LoadGuideState();
         RefreshGuideUI();
     }
 
@@ -166,7 +160,6 @@ public class GuideManager : MonoBehaviour
         }
 
         isGuideCompleted = true;
-        SaveBool(KeyGuideCompleted, true);
         return true;
     }
 
@@ -192,33 +185,5 @@ public class GuideManager : MonoBehaviour
         {
             obj.SetActive(state);
         }
-    }
-
-    private void LoadGuideState()
-    {
-        isGuideCompleted = LoadBool(KeyGuideCompleted);
-        isMovementDone = LoadBool(KeyMovementDone);
-        isFlashlightDone = LoadBool(KeyFlashlightDone);
-        isInteractDone = LoadBool(KeyInteractDone);
-        isSaveDone = LoadBool(KeySaveDone);
-
-        if (isGuideCompleted)
-        {
-            isMovementDone = true;
-            isFlashlightDone = true;
-            isInteractDone = true;
-            isSaveDone = true;
-        }
-    }
-
-    private static bool LoadBool(string key)
-    {
-        return PlayerPrefs.GetInt(key, 0) == 1;
-    }
-
-    private static void SaveBool(string key, bool value)
-    {
-        PlayerPrefs.SetInt(key, value ? 1 : 0);
-        PlayerPrefs.Save();
     }
 }
