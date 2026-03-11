@@ -11,6 +11,7 @@ public class MainMenuHandler : MonoBehaviour
     {
         optionPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
+        AudioManager.Instance.PlayBGM(AudioManager.Instance.bgmMainMenu);
     }
     public void StartNewGame()
     {
