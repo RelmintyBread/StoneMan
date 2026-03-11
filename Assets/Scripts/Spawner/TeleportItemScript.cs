@@ -11,14 +11,17 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
     [Header("Scene Objects")]
     public Artifact[] artifacts;
     public Battery[] batteries;
+    public PaperScript[] papers;
+
     private readonly List<int> artifactSpawnIndexes = new List<int>();
     private readonly List<int> batterySpawnIndexes = new List<int>();
+    private readonly List<int> paperSpawnIndexes = new List<int>();
+
     private bool spawnGenerated;
 
     void Awake()
     {
         SaveManager.RegisterSaveable(this);
-
         Instance = this;
     }
 
@@ -34,7 +37,7 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
 
     void GenerateSpawn()
     {
-        if (spawnPoints.Length < artifacts.Length + batteries.Length)
+        if (spawnPoints.Length < artifacts.Length + batteries.Length + papers.Length)
         {
             Debug.LogError("Not enough spawn points!");
             return;
@@ -42,6 +45,7 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
 
         artifactSpawnIndexes.Clear();
         batterySpawnIndexes.Clear();
+        paperSpawnIndexes.Clear();
 
         List<int> indexes = new List<int>();
 
@@ -54,15 +58,24 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
 
         int counter = 0;
 
+        // Artifact positions
         for (int i = 0; i < artifacts.Length; i++)
         {
             artifactSpawnIndexes.Add(indexes[counter]);
             counter++;
         }
 
+        // Battery positions
         for (int i = 0; i < batteries.Length; i++)
         {
             batterySpawnIndexes.Add(indexes[counter]);
+            counter++;
+        }
+
+        // Paper positions
+        for (int i = 0; i < papers.Length; i++)
+        {
+            paperSpawnIndexes.Add(indexes[counter]);
             counter++;
         }
 
@@ -71,11 +84,14 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
 
     void AssignPositions()
     {
-        if (artifactSpawnIndexes.Count != artifacts.Length || batterySpawnIndexes.Count != batteries.Length)
+        if (artifactSpawnIndexes.Count != artifacts.Length ||
+            batterySpawnIndexes.Count != batteries.Length ||
+            paperSpawnIndexes.Count != papers.Length)
         {
             return;
         }
 
+        // Artifact
         for (int i = 0; i < artifacts.Length; i++)
         {
             int index = artifactSpawnIndexes[i];
@@ -83,11 +99,20 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
             artifacts[i].transform.position = spawnPoints[index].position;
         }
 
+        // Battery
         for (int i = 0; i < batteries.Length; i++)
         {
             int index = batterySpawnIndexes[i];
             if (index < 0 || index >= spawnPoints.Length) continue;
             batteries[i].transform.position = spawnPoints[index].position;
+        }
+
+        // Paper
+        for (int i = 0; i < papers.Length; i++)
+        {
+            int index = paperSpawnIndexes[i];
+            if (index < 0 || index >= spawnPoints.Length) continue;
+            papers[i].transform.position = spawnPoints[index].position;
         }
     }
 
@@ -96,6 +121,7 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
         for (int i = 0; i < list.Count; i++)
         {
             int rand = Random.Range(i, list.Count);
+
             int temp = list[i];
             list[i] = list[rand];
             list[rand] = temp;
@@ -103,11 +129,14 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
     }
 
     // ===== Save System Handlers =====
+
     public void OnSave(SaveData data)
     {
         data.spawnGenerated = spawnGenerated;
+
         data.artifactPositions.Clear();
         data.batteryPositions.Clear();
+        data.paperPositions.Clear();
 
         for (int i = 0; i < artifactSpawnIndexes.Count; i++)
         {
@@ -118,12 +147,18 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
         {
             data.batteryPositions.Add(batterySpawnIndexes[i]);
         }
+
+        for (int i = 0; i < paperSpawnIndexes.Count; i++)
+        {
+            data.paperPositions.Add(paperSpawnIndexes[i]);
+        }
     }
 
     public void OnLoad(SaveData data)
     {
         artifactSpawnIndexes.Clear();
         batterySpawnIndexes.Clear();
+        paperSpawnIndexes.Clear();
 
         if (!data.spawnGenerated)
         {
@@ -143,6 +178,11 @@ public class ItemSpawnManager : MonoBehaviour, ISaveable
         for (int i = 0; i < data.batteryPositions.Count; i++)
         {
             batterySpawnIndexes.Add(data.batteryPositions[i]);
+        }
+
+        for (int i = 0; i < data.paperPositions.Count; i++)
+        {
+            paperSpawnIndexes.Add(data.paperPositions[i]);
         }
 
         AssignPositions();

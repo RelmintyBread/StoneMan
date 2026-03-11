@@ -16,6 +16,11 @@ public class SaveData
         if (batteryPositions == null) batteryPositions = new List<int>();
         if (isArtifactCollected == null) isArtifactCollected = new List<string>();
         if (artifactPositions == null) artifactPositions = new List<int>();
+
+        // Paper defaults
+        if (isPaperCollected == null) isPaperCollected = new List<string>();
+        if (paperPositions == null) paperPositions = new List<int>();
+
         if (savedScene == null) savedScene = string.Empty;
     }
 
@@ -30,7 +35,7 @@ public class SaveData
     // Flashlight-related data
     public float flashlightBattery;
 
-    //Battery-related data
+    // Battery-related data
     public List<string> isBatteryCollected;
     public List<int> batteryPositions;
 
@@ -40,7 +45,10 @@ public class SaveData
     public int collectedArtifactsCount;
     public bool spawnGenerated;
 
-    // Ui Guide-related data
-    public bool isGuideDone;
+    // Paper-related data
+    public List<string> isPaperCollected;
+    public List<int> paperPositions;
 
+    // UI Guide-related data
+    public bool isGuideDone;
 }
