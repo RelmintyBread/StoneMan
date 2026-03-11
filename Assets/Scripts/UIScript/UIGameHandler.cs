@@ -97,6 +97,11 @@ public class UIGameHandler : MonoBehaviour
         IsGameOver = false;
     }
 
+    private void Start()
+    {
+        AudioManager.Instance.PlayBGM(AudioManager.Instance.bgmGameplay);
+    }
+
     private void LateUpdate()
     {
         if (playerTransform == null || worldCamera == null)

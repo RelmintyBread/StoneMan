@@ -106,6 +106,7 @@ public class StoneManAI : MonoBehaviour
 
             case State.Chase:
                 patrol.StopPatrol();
+                AudioManager.Instance.PlayBGM(AudioManager.Instance.bgmChase);
                 mover.MoveTo(player.position);
                 break;
         }
@@ -134,6 +135,17 @@ public class StoneManAI : MonoBehaviour
         // Saat baru masuk Patrol: cari patrol point terdekat yang BISA DICAPAI via A*
         if (currentState == State.Patrol && previousState != State.Patrol)
             patrol.ReturnToNearestReachable();
+
+        // Saat masuk chase, langsung play BGM chase. Saat keluar chase, langsung play BGM gameplay (tanpa fade) agar terasa lebih tegang.
+        if (currentState != State.Chase && previousState == State.Chase)
+            AudioManager.Instance.PlayBGM(AudioManager.Instance.bgmGameplay);
+
+        if (distanceToPlayer > noiseDistance)
+        {
+            Debug.Log("Player escaped from StoneMan's chase range.");
+            AudioManager.Instance.StopStoneman();
+        }
+
     }
 
     // ─────────────────────────────────────────────
@@ -154,6 +166,7 @@ public class StoneManAI : MonoBehaviour
 
         if (inNoiseRange)
             Debug.Log("StoneMan hears the player — teleporting close!");
+        AudioManager.Instance.PlayStonemanStep();
 
         if (TryFindValidTeleportPos(minRing, maxRing, out Vector2 dest))
             transform.position = dest;

@@ -66,6 +66,8 @@ public class SaveManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(saveFilePath, json);
+
+        UIGameHandler.Instance?.ShowSaveConfirmation();
     }
 
     // Optional: load data ke scene yang sedang aktif (tanpa pindah scene).
