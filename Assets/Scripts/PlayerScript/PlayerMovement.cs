@@ -2,22 +2,51 @@ using UnityEngine;
 
 public class PlayerMovement2D : MonoBehaviour, ISaveable
 {
-    public float walkSpeed = 5f; //Speed ketika berjalan
-    public float sprintSpeed = 10f; //speed ketika berlari
+    public float walkSpeed = 5f;
+    public float sprintSpeed = 10f;
 
     [Header("Stamina Settings")]
-    public float maxStamina = 4f; //maks stamina (6 detik)
-    [Range(0, 6)] public float currentStamina; //stamina saat ini
-    public float staminaDrainRate = 1f; //habis dalam 6 detik
-    public float staminaRegenRate = 1f; //regen dalam 6 detik
+    public float maxStamina = 4f;
+    [Range(0, 6)] public float currentStamina;
+    public float staminaDrainRate = 1f;
+    public float staminaRegenRate = 1f;
 
-    private Rigidbody2D rb; //variable yang akan menyatu dengan Rigidbody2D rb;
-    private Vector2 moveInput; //variable yang akan menghubungkan input gerakan player 2D
+    [Header("Directional Sprites")]
+    [SerializeField] private Sprite idleUp;
+    [SerializeField] private Sprite idleDown;
+    [SerializeField] private Sprite idleLeft;
+    [SerializeField] private Sprite idleRight;
+
+    [SerializeField] private Sprite walkUp1;
+    [SerializeField] private Sprite walkUp2;
+
+    [SerializeField] private Sprite walkDown1;
+    [SerializeField] private Sprite walkDown2;
+
+    [SerializeField] private Sprite walkLeft1;
+    [SerializeField] private Sprite walkLeft2;
+
+    [SerializeField] private Sprite walkRight1;
+    [SerializeField] private Sprite walkRight2;
+
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [Header("Walk Animation")]
+    [SerializeField] private float walkFrameRate = 0.15f;
+
+    private float walkTimer;
+    private int walkFrame;
+    private Rigidbody2D rb;
+    private Vector2 moveInput;
     private PlayerInteract playerInteract;
 
-    private bool isSprinting; //status sprint
-    private bool isExhausted; //status exhausted (tidak bisa sprint)
+    private bool isSprinting;
+    private bool isExhausted;
     private bool hasLoadedData;
+
+    private enum FacingDirection { Up, Down, Left, Right }
+    private FacingDirection lastFacing = FacingDirection.Down;
+
     public float rotationSpeed = 720f;
 
     void Awake()
@@ -27,12 +56,17 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>(); //menyimpan dalam variable rb 
+        rb = GetComponent<Rigidbody2D>();
         playerInteract = GetComponent<PlayerInteract>();
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
         if (!hasLoadedData)
         {
-            currentStamina = maxStamina; //set stamina penuh saat mulai
+            currentStamina = maxStamina;
         }
+
         isExhausted = false;
         HandleUpdateUI();
     }
@@ -49,15 +83,11 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
         {
             playerInteract.SetFacingDirection(moveInput);
 
-            if (moveInput != Vector2.zero)
-            {
-                float targetAngle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
-                float smoothAngle = Mathf.LerpAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime / 100f);
-                rb.rotation = smoothAngle;
-            }
+            float targetAngle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
+            float smoothAngle = Mathf.LerpAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime / 100f);
+            rb.rotation = smoothAngle;
         }
 
-        //cek sprint hanya jika stamina ada, tidak exhausted, dan player bergerak
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isExhausted && moveInput.magnitude > 0)
         {
             isSprinting = true;
@@ -69,6 +99,7 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
 
         HandleStamina();
         HandleUpdateUI();
+        HandleSprite();
     }
 
     void FixedUpdate()
@@ -86,7 +117,7 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
             if (currentStamina <= 0)
             {
                 currentStamina = 0;
-                isExhausted = true; //player exhausted
+                isExhausted = true;
             }
         }
         else
@@ -98,7 +129,7 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
                 if (currentStamina >= maxStamina)
                 {
                     currentStamina = maxStamina;
-                    isExhausted = false; //player can sprint again
+                    isExhausted = false;
                 }
             }
         }
@@ -112,7 +143,83 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
         }
     }
 
-    // ===== Save System Handlers =====
+    void HandleSprite()
+    {
+    if (spriteRenderer == null) return;
+
+    if (moveInput.sqrMagnitude > 0)
+    {
+        walkTimer += Time.deltaTime;
+
+        if (walkTimer >= walkFrameRate)
+        {
+            walkTimer = 0f;
+            walkFrame = (walkFrame + 1) % 4;
+        }
+
+        if (Mathf.Abs(moveInput.x) > Mathf.Abs(moveInput.y))
+        {
+            if (moveInput.x > 0)
+            {
+                lastFacing = FacingDirection.Right;
+                spriteRenderer.sprite = GetWalkSprite(walkRight1, walkRight2, idleRight);
+            }
+            else
+            {
+                lastFacing = FacingDirection.Left;
+                spriteRenderer.sprite = GetWalkSprite(walkLeft1, walkLeft2, idleLeft);
+            }
+        }
+        else
+        {
+            if (moveInput.y > 0)
+            {
+                lastFacing = FacingDirection.Up;
+                spriteRenderer.sprite = GetWalkSprite(walkUp1, walkUp2, idleUp);
+            }
+            else
+            {
+                lastFacing = FacingDirection.Down;
+                spriteRenderer.sprite = GetWalkSprite(walkDown1, walkDown2, idleDown);
+            }
+        }
+    }
+    else
+    {
+        walkTimer = 0;
+        walkFrame = 0;
+
+        switch (lastFacing)
+        {
+            case FacingDirection.Up:
+                spriteRenderer.sprite = idleUp;
+                break;
+            case FacingDirection.Down:
+                spriteRenderer.sprite = idleDown;
+                break;
+            case FacingDirection.Left:
+                spriteRenderer.sprite = idleLeft;
+                break;
+            case FacingDirection.Right:
+                spriteRenderer.sprite = idleRight;
+                break;
+        }
+    }
+}
+
+Sprite GetWalkSprite(Sprite walk1, Sprite walk2, Sprite idle)
+{
+    switch (walkFrame)
+    {
+        case 0: return walk1;
+        case 1: return idle;
+        case 2: return walk2;
+        case 3: return idle;
+    }
+
+    return idle;
+}
+
     public void OnSave(SaveData data)
     {
         data.playerPosition = transform.position;
