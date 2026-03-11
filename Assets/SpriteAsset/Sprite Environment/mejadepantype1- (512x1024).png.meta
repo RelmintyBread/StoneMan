@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d1f3b299d13d7114aa1614d3eda8145a
+guid: 71db8f09d0f4e924fb99320856e64f23
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4706328404815202029
-    second: pngtree-white-border-png-image_2415457-removebg-preview_0
+      213: 5664927811617016538
+    second: mejadepantype1- (512x1024)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pngtree-white-border-png-image_2415457-removebg-preview_0
+      name: mejadepantype1- (512x1024)_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 76
-        width: 323
-        height: 208
+        x: 47
+        y: 15
+        width: 418
+        height: 1009
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 319b8a24043cfaeb0800000000000000
-      internalID: -4706328404815202029
+      spriteID: adac9a1a4dddd9e40800000000000000
+      internalID: 5664927811617016538
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pngtree-white-border-png-image_2415457-removebg-preview_0: -4706328404815202029
+      mejadepantype1- (512x1024)_0: 5664927811617016538
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
