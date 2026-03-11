@@ -58,6 +58,9 @@ public class SaveManager : MonoBehaviour
 
         CleanupDestroyedSaveables();
         LogEditor($"[SaveManager] Saving {saveables.Count} objects to: {saveFilePath}");
+        Debug.Log("Saving objects count: " + saveables.Count);
+        Debug.Log("SaveManager: " + SaveManager.Instance);
+
 
         foreach (ISaveable saveable in saveables)
         {

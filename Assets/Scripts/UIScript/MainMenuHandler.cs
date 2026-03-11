@@ -30,7 +30,6 @@ public class MainMenuHandler : MonoBehaviour
             return;
         }
 
-        StartNewGame();
         Debug.Log("No Save Found");
     }
 

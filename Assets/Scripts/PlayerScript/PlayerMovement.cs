@@ -220,16 +220,19 @@ Sprite GetWalkSprite(Sprite walk1, Sprite walk2, Sprite idle)
     return idle;
 }
 
-    public void OnSave(SaveData data)
-    {
-        data.playerPosition = transform.position;
-        data.playerStamina = currentStamina;
-    }
+public void OnSave(SaveData data)
+{
+    data.playerPosition = rb.position;
+    data.playerStamina = currentStamina;
+}
 
-    public void OnLoad(SaveData data)
-    {
-        transform.position = data.playerPosition;
-        currentStamina = data.playerStamina;
-        hasLoadedData = true;
-    }
+public void OnLoad(SaveData data)
+{
+    rb.position = data.playerPosition;
+    currentStamina = data.playerStamina;
+    hasLoadedData = true;
+
+    HandleUpdateUI();
+}
+
 }
