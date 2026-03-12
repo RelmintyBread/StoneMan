@@ -5,6 +5,8 @@ public class AudioManager : MonoBehaviour
 {
 
     public static AudioManager Instance { get; private set; }
+    [Header("Debug")]
+    [SerializeField] private bool logAudioEvents = true;
 
     void Awake()
     {
@@ -16,6 +18,8 @@ public class AudioManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject); // Tetap hidup antar scene
+
+        ValidateAudioSetup();
     }
 
     // ─────────────────────────────────────────────
@@ -49,15 +53,20 @@ public class AudioManager : MonoBehaviour
 
     [Header("UI Clips")]
     public AudioClip buttonClick;
+    public AudioClip sfxHoldLoop;
+    public AudioClip sfxHoldComplete;
+    public AudioClip sfxFlashlightClick;
 
     [Header("Settings")]
     [SerializeField] private float bgmFadeDuration = 1f;
+    [SerializeField] private AudioSource holdLoopSource;
 
     // ─────────────────────────────────────────────
     //  BGM
     // ─────────────────────────────────────────────
     public void PlayBGM(AudioClip clip)
     {
+        if (logAudioEvents) Debug.Log($"[AudioManager] PlayBGM: {ClipName(clip)}");
         if (clip == null) return;
         if (bgmSource.clip == clip && bgmSource.isPlaying) return;
 
@@ -123,6 +132,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip)
     {
+        if (logAudioEvents) Debug.Log($"[AudioManager] PlaySFX: {ClipName(clip)}");
         if (clip == null) return;
         sfxSource.PlayOneShot(clip);
     }
@@ -134,12 +144,33 @@ public class AudioManager : MonoBehaviour
     public void PlayBarrel() => PlaySFX(sfxBarrel);
     public void PlayLemari() => PlaySFX(sfxLemari);
     public void PlaySave() => PlaySFX(sfxSave);
+    public void PlayButtonClick() => PlaySFX(buttonClick);
+    public void PlayHoldLoop()
+    {
+        if (logAudioEvents) Debug.Log($"[AudioManager] PlayHoldLoop: {ClipName(sfxHoldLoop)}");
+        if (sfxHoldLoop == null || holdLoopSource == null) return;
+        if (holdLoopSource.isPlaying) return;
+        holdLoopSource.clip = sfxHoldLoop;
+        holdLoopSource.loop = true;
+        holdLoopSource.Play();
+    }
+
+    public void StopHoldLoop()
+    {
+        if (holdLoopSource == null) return;
+        holdLoopSource.loop = false;
+        holdLoopSource.Stop();
+    }
+
+    public void PlayHoldComplete() => PlaySFX(sfxHoldComplete);
+    public void PlayFlashlightClick() => PlaySFX(sfxFlashlightClick);
 
     // ─────────────────────────────────────────────
     //  SUARA STONEMAN
     // ─────────────────────────────────────────────
     public void PlayStonemanStep()
     {
+        if (logAudioEvents) Debug.Log($"[AudioManager] PlayStonemanStep: {ClipName(sfxStonemanStep)}");
         if (stonemanSource.isPlaying) return;
         stonemanSource.clip = sfxStonemanStep;
         stonemanSource.loop = true;
@@ -153,6 +184,7 @@ public class AudioManager : MonoBehaviour
     // ─────────────────────────────────────────────
     public void PlayFootstep(AudioClip clip)
     {
+        if (logAudioEvents) Debug.Log($"[AudioManager] PlayFootstep: {ClipName(clip)}");
         if (playerSource.isPlaying) return;
         playerSource.clip = clip;
         playerSource.loop = true;
@@ -172,4 +204,44 @@ public class AudioManager : MonoBehaviour
 
     public void SetBGMVolume(float volume) => bgmSource.volume = volume;
     public void SetSFXVolume(float volume) => sfxSource.volume = volume;
+    public float GetBGMVolume() => bgmSource != null ? bgmSource.volume : 1f;
+    public float GetSFXVolume() => sfxSource != null ? sfxSource.volume : 1f;
+
+    private static string ClipName(AudioClip clip)
+    {
+        return clip == null ? "null" : clip.name;
+    }
+
+    private void ValidateAudioSetup()
+    {
+        if (bgmSource == null) Debug.LogWarning("[AudioManager] bgmSource belum di-assign.");
+        if (sfxSource == null) Debug.LogWarning("[AudioManager] sfxSource belum di-assign.");
+        if (stonemanSource == null) Debug.LogWarning("[AudioManager] stonemanSource belum di-assign.");
+        if (playerSource == null) Debug.LogWarning("[AudioManager] playerSource belum di-assign.");
+
+        if (bgmMainMenu == null) Debug.LogWarning("[AudioManager] bgmMainMenu belum di-assign.");
+        if (bgmGameplay == null) Debug.LogWarning("[AudioManager] bgmGameplay belum di-assign.");
+        if (bgmChase == null) Debug.LogWarning("[AudioManager] bgmChase belum di-assign.");
+
+        if (sfxFootStep == null) Debug.LogWarning("[AudioManager] sfxFootStep belum di-assign.");
+        if (sfxExhausted == null) Debug.LogWarning("[AudioManager] sfxExhausted belum di-assign.");
+        if (sfxStonemanStep == null) Debug.LogWarning("[AudioManager] sfxStonemanStep belum di-assign.");
+        if (sfxStun == null) Debug.LogWarning("[AudioManager] sfxStun belum di-assign.");
+
+        if (sfxDoorOpen == null) Debug.LogWarning("[AudioManager] sfxDoorOpen belum di-assign.");
+        if (sfxBarrel == null) Debug.LogWarning("[AudioManager] sfxBarrel belum di-assign.");
+        if (sfxLemari == null) Debug.LogWarning("[AudioManager] sfxLemari belum di-assign.");
+        if (sfxSave == null) Debug.LogWarning("[AudioManager] sfxSave belum di-assign.");
+        if (buttonClick == null) Debug.LogWarning("[AudioManager] buttonClick belum di-assign.");
+        if (sfxHoldLoop == null) Debug.LogWarning("[AudioManager] sfxHoldLoop belum di-assign.");
+        if (sfxHoldComplete == null) Debug.LogWarning("[AudioManager] sfxHoldComplete belum di-assign.");
+        if (sfxFlashlightClick == null) Debug.LogWarning("[AudioManager] sfxFlashlightClick belum di-assign.");
+
+        if (holdLoopSource == null) Debug.LogWarning("[AudioManager] holdLoopSource belum di-assign.");
+
+        if (AudioListener.pause)
+        {
+            Debug.LogWarning("[AudioManager] AudioListener sedang pause.");
+        }
+    }
 }

@@ -81,6 +81,7 @@ public class FlashlightController : MonoBehaviour, ISaveable
         flashlightLight.enabled = true;
         Debug.Log($"ON: enabled={flashlightLight.enabled}, pos={flashlightLight.transform.position}");
         isOn = true;
+        AudioManager.Instance?.PlayFlashlightClick();
     }
 
     void TurnOff()
@@ -88,6 +89,7 @@ public class FlashlightController : MonoBehaviour, ISaveable
         // disable light
         flashlightLight.enabled = false;
         isOn = false;
+        AudioManager.Instance?.PlayFlashlightClick();
     }
 
     // ===== Main Handlers =====

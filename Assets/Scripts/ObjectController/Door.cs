@@ -45,6 +45,7 @@ public class Door : MonoBehaviour, IInteractable, ISaveable
     {
         engsel.Rotate(0f, 0f, isOpen ? -90f : 90f);
         isOpen = !isOpen;
+        AudioManager.Instance?.PlayDoorOpen();
 
         // Swap layer: terbuka → jadi Obstacle (A* tahu), tertutup → jadi Door (A* abaikan)
         gameObject.layer = LayerMask.NameToLayer(isOpen ? openLayerName : closedLayerName);

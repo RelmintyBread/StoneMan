@@ -35,6 +35,7 @@ public class SavePoint2D : MonoBehaviour, IInteractable
     {
         SaveManager.Instance?.Save();
         GuideManager.Instance?.NotifySaveUsed();
+        AudioManager.Instance?.PlaySave();
 
         Debug.Log("Game Saved!");
     }

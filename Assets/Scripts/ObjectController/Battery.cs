@@ -60,6 +60,7 @@ public class Battery : MonoBehaviour, IInteractable, ISaveable
     {
         isHolding = false;
         UIGameHandler.Instance?.EndHoldInteraction(false);
+        AudioManager.Instance?.PlayHoldComplete();
 
         Debug.Log("Battery picked!");
 

@@ -3,6 +3,8 @@ using UnityEngine;
 public class HidingObject : MonoBehaviour, IInteractable
 {
     [SerializeField] public PlayerHide playerHide; // Referensi ke script PlayerHide untuk memanggil fungsi sembunyi
+    [Header("Audio")]
+    [SerializeField] private bool useBarrelSfx;
 
     public void ShowInteractUI()
     {
@@ -57,6 +59,7 @@ public class HidingObject : MonoBehaviour, IInteractable
         if (playerHide == null) return;
         if (!playerHide.HidePlayer(this)) return;
 
+        PlayHideSfx();
         HideInteractUI(); // Sembunyikan prompt "E" agar layar bersih saat ngumpet
         Debug.Log("Syuut... Player sembunyi!");
     }
@@ -66,8 +69,21 @@ public class HidingObject : MonoBehaviour, IInteractable
         if (playerHide == null) return;
         if (!playerHide.UnhidePlayer(this)) return;
 
+        PlayHideSfx();
         ShowInteractUI(); // Munculkan lagi prompt "E" untuk opsi ngumpet lagi nanti
         Debug.Log("Player keluar dari tempat persembunyian!");
+    }
+
+    private void PlayHideSfx()
+    {
+        if (AudioManager.Instance == null) return;
+        if (useBarrelSfx)
+        {
+            AudioManager.Instance.PlayBarrel();
+            return;
+        }
+
+        AudioManager.Instance.PlayLemari();
     }
 
     public void KeluarPersembunyianDariPlayer()

@@ -171,6 +171,7 @@ public class UIGameHandler : MonoBehaviour
     {
         isHoldInteractionActive = true;
         HideInteractPrompt();
+        AudioManager.Instance?.PlayHoldLoop();
 
         if (interactProgressPanel != null)
         {
@@ -194,6 +195,7 @@ public class UIGameHandler : MonoBehaviour
     public void EndHoldInteraction(bool restorePrompt = true)
     {
         isHoldInteractionActive = false;
+        AudioManager.Instance?.StopHoldLoop();
 
         if (interactProgressPanel != null)
         {
@@ -229,6 +231,7 @@ public class UIGameHandler : MonoBehaviour
 
     public void RestartFromCheckpoint()
     {
+        AudioManager.Instance?.PlayButtonClick();
         IsGameOver = false;
         Time.timeScale = 1f;
 
@@ -242,6 +245,7 @@ public class UIGameHandler : MonoBehaviour
 
     public void BackToMainMenu()
     {
+        AudioManager.Instance?.PlayButtonClick();
         IsGameOver = false;
 
         if (SaveManager.Instance != null)

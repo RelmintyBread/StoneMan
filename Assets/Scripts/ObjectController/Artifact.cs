@@ -59,6 +59,7 @@ public class Artifact : MonoBehaviour, IInteractable, ISaveable
     {
         isHolding = false;
         UIGameHandler.Instance?.EndHoldInteraction(false);
+        AudioManager.Instance?.PlayHoldComplete();
 
         if (isCollected)
         {

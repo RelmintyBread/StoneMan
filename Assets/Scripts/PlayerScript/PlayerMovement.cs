@@ -102,6 +102,7 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
         HandleStamina();
         HandleUpdateUI();
         HandleSprite();
+        HandleFootstepSFX();
     }
 
     void FixedUpdate()
@@ -120,6 +121,7 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
             {
                 currentStamina = 0;
                 isExhausted = true;
+                AudioManager.Instance?.PlaySFX(AudioManager.Instance.sfxExhausted);
             }
         }
         else
@@ -131,6 +133,10 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
                 if (currentStamina >= maxStamina)
                 {
                     currentStamina = maxStamina;
+                }
+
+                if (currentStamina > (0.2 * maxStamina) && isExhausted)
+                {
                     isExhausted = false;
                 }
             }
@@ -209,44 +215,66 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
         }
     }
 
-Sprite GetWalkSprite(Sprite walk1, Sprite walk2, Sprite idle)
-{
-    switch (walkFrame)
+    void HandleFootstepSFX()
     {
-        case 0: return walk1;
-        case 1: return idle;
-        case 2: return walk2;
-        case 3: return idle;
+        if (AudioManager.Instance == null) return;
+
+        bool isMoving = moveInput.sqrMagnitude > 0.01f;
+        if (isMoving)
+        {
+            if (AudioManager.Instance.sfxFootStep != null)
+            {
+                AudioManager.Instance.PlayFootstep(AudioManager.Instance.sfxFootStep);
+            }
+            return;
+        }
+
+        AudioManager.Instance.StopFootstep();
     }
 
-    return idle;
-}
-
-public void OnSave(SaveData data)
-{
-    if (rb == null)
+    Sprite GetWalkSprite(Sprite walk1, Sprite walk2, Sprite idle)
     {
-        rb = GetComponent<Rigidbody2D>();
-        if (rb == null) return;
+        switch (walkFrame)
+        {
+            case 0: return walk1;
+            case 1: return idle;
+            case 2: return walk2;
+            case 3: return idle;
+        }
+
+        return idle;
     }
 
-    data.playerPosition = rb.position;
-    data.playerStamina = currentStamina;
-}
-
-public void OnLoad(SaveData data)
-{
-    if (rb == null)
+    public void OnSave(SaveData data)
     {
-        rb = GetComponent<Rigidbody2D>();
-        if (rb == null) return;
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+            if (rb == null) return;
+        }
+
+        data.playerPosition = rb.position;
+        data.playerStamina = currentStamina;
     }
 
-    rb.position = data.playerPosition;
-    currentStamina = data.playerStamina;
-    hasLoadedData = true;
+    public void OnLoad(SaveData data)
+    {
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+            if (rb == null) return;
+        }
 
-    HandleUpdateUI();
-}
+        rb.position = data.playerPosition;
+        currentStamina = data.playerStamina;
+        hasLoadedData = true;
+
+        HandleUpdateUI();
+    }
+
+    void OnDisable()
+    {
+        AudioManager.Instance?.StopFootstep();
+    }
 
 }

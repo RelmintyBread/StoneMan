@@ -39,6 +39,7 @@ public class PauseHandler : MonoBehaviour
 
     public void Resume()
     {
+        AudioManager.Instance?.PlayButtonClick();
         pausePanelUI.SetActive(false);
         gamePanelUI.SetActive(true);
         Time.timeScale = 1f;
@@ -46,6 +47,7 @@ public class PauseHandler : MonoBehaviour
 
     public void MainMenu()
     {
+        AudioManager.Instance?.PlayButtonClick();
         // Clear pending load data to prevent old data from being applied on next load
         if (SaveManager.Instance != null)
         {
@@ -58,6 +60,7 @@ public class PauseHandler : MonoBehaviour
 
     public void Pause()
     {
+        AudioManager.Instance?.PlayButtonClick();
         pausePanelUI.SetActive(true);
         gamePanelUI.SetActive(false);
         Time.timeScale = 0f;

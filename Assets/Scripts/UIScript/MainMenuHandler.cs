@@ -15,6 +15,7 @@ public class MainMenuHandler : MonoBehaviour
     }
     public void StartNewGame()
     {
+        AudioManager.Instance?.PlayButtonClick();
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.DeleteSave();
@@ -25,6 +26,7 @@ public class MainMenuHandler : MonoBehaviour
 
     public void LoadSavedGame()
     {
+        AudioManager.Instance?.PlayButtonClick();
         if (SaveManager.Instance != null && SaveManager.Instance.LoadSavedGame())
         {
             return;
@@ -41,6 +43,7 @@ public class MainMenuHandler : MonoBehaviour
 
     public void Quit()
     {
+        AudioManager.Instance?.PlayButtonClick();
         Debug.Log("Quit Game");
 
         Application.Quit();
@@ -48,6 +51,7 @@ public class MainMenuHandler : MonoBehaviour
 
     public void OpenOptionPanel()
     {
+        AudioManager.Instance?.PlayButtonClick();
         optionPanel.SetActive(true);
         mainMenuPanel.SetActive(false);
     }
