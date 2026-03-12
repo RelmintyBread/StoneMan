@@ -11,6 +11,11 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI dialogueText;
     public Image dialogueBorder;
 
+
+    [Header("Fade Settings")]
+    public CanvasGroup dialogueCanvas;
+    public float fadeDuration = 0.5f;
+
     [Header("Typing Settings")]
     public float typingSpeed = 0.03f;
 
@@ -134,13 +139,14 @@ public class DialogueManager : MonoBehaviour
         };
     }
 
-    public void StartDialogue(int index)
-    {
-        currentDialogue = dialogues[index - 1];
-        currentLine = 0;
+public void StartDialogue(int index)
+{
+    currentDialogue = dialogues[index - 1];
+    currentLine = 0;
 
-        StartCoroutine(TypeLine());
-    }
+    StartCoroutine(FadeIn());
+    StartCoroutine(TypeLine());
+}
 
 void Update()
 {
@@ -193,6 +199,22 @@ IEnumerator TypeLine()
 }
 
     isTyping = false;
+}
+
+IEnumerator FadeIn()
+{
+    float t = 0f;
+
+    dialogueCanvas.alpha = 0f;
+
+    while (t < fadeDuration)
+    {
+        t += Time.deltaTime;
+        dialogueCanvas.alpha = Mathf.Lerp(0f, 1f, t / fadeDuration);
+        yield return null;
+    }
+
+    dialogueCanvas.alpha = 1f;
 }
 
     void NextLine()

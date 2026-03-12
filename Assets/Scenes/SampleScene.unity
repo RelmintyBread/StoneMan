@@ -4706,7 +4706,7 @@ MonoBehaviour:
   doorLayer:
     serializedVersion: 2
     m_Bits: 256
-  doorRaycastDistance: 0.8
+  doorRaycastDistance: 5
   doorOpenWaitDuration: 0.4
   rotateWithMovement: 0
   directionDeadzone: 0.2
@@ -23248,6 +23248,7 @@ GameObject:
   - component: {fileID: 1553175328}
   - component: {fileID: 1553175330}
   - component: {fileID: 1553175329}
+  - component: {fileID: 1553175331}
   m_Layer: 5
   m_Name: BlackCutscene
   m_TagString: Untagged
@@ -23312,6 +23313,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1553175327}
   m_CullTransparentMesh: 1
+--- !u!225 &1553175331
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1553175327}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1558122806
 GameObject:
   m_ObjectHideFlags: 0
@@ -24120,6 +24133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   dialogueText: {fileID: 880184598}
   dialogueBorder: {fileID: 993089496}
+  dialogueCanvas: {fileID: 1553175331}
+  fadeDuration: 0.5
   typingSpeed: 0.03
 --- !u!1 &1620283264
 GameObject:
