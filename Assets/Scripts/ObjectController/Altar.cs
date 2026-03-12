@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Altar : MonoBehaviour, IInteractable
 {
+    [Header("Ending Cutscene UI")]
+    public GameObject endingUIPanel;
+
     public void ShowInteractUI()
     {
         UIGameHandler.Instance?.ShowInteractPrompt();
@@ -33,6 +36,11 @@ public class Altar : MonoBehaviour, IInteractable
         if (progress.HasRequiredArtifacts)
         {
             Debug.Log("Altar Cutscene Activated");
+
+            if (endingUIPanel != null)
+            {
+                endingUIPanel.SetActive(true); // Trigger ending cutscene UI
+            }
         }
         else
         {

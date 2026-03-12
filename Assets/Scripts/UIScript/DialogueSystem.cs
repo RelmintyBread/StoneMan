@@ -19,7 +19,8 @@ public class DialogueManager : MonoBehaviour
     private int currentLine;
     private string[] currentDialogue;
 
-    private bool isTyping = false;
+    bool isTyping = false;
+    bool skipTyping = false;
 
     private void Awake()
     {
@@ -141,17 +142,25 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(TypeLine());
     }
 
-    void Update()
+void Update()
+{
+    if (Input.GetMouseButtonDown(0))
     {
-        if (Input.GetMouseButtonDown(0) && !isTyping)
-        {
+        if (isTyping)
+            skipTyping = true;
+        else
             NextLine();
-        }
     }
 
+    if (Input.GetKeyDown(KeyCode.E))
+    {
+        CutsceneManager.Instance.EndCutscene();
+    }
+}
 IEnumerator TypeLine()
 {
     isTyping = true;
+    skipTyping = false;
     dialogueText.text = "";
 
     string line = currentDialogue[currentLine];
@@ -159,23 +168,29 @@ IEnumerator TypeLine()
     UpdateBorderColor(line);
 
     for (int i = 0; i < line.Length; i++)
+{
+    if (skipTyping)
     {
-        if (line[i] == '<') // Detect start of rich text tag
-        {
-            while (i < line.Length && line[i] != '>')
-            {
-                dialogueText.text += line[i];
-                i++;
-            }
+        dialogueText.text = line;
+        break;
+    }
 
-            dialogueText.text += '>'; // Add closing bracket
-        }
-        else
+    if (line[i] == '<') // Detect rich text tag
+    {
+        while (i < line.Length && line[i] != '>')
         {
             dialogueText.text += line[i];
-            yield return new WaitForSeconds(typingSpeed);
+            i++;
         }
+
+        dialogueText.text += '>';
     }
+    else
+    {
+        dialogueText.text += line[i];
+        yield return new WaitForSeconds(typingSpeed);
+    }
+}
 
     isTyping = false;
 }
