@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CutsceneManager : MonoBehaviour
 {
@@ -7,14 +8,19 @@ public class CutsceneManager : MonoBehaviour
     public GameObject cutsceneUI;
     public GameObject player;
     public GameObject playerUI;
-
     public GameObject stoneman;
+
+    [Header("Fade UI")]
+    public GameObject fadeUI;
+    private CanvasGroup fadeGroup;
+    public float fadeSpeed = 2f;
 
     private int lastPlayedCutscene = 0;
 
     private void Awake()
     {
         Instance = this;
+        fadeGroup = fadeUI.GetComponent<CanvasGroup>();
     }
 
     public void TryPlayCutscene(int artifactCount)
@@ -23,7 +29,36 @@ public class CutsceneManager : MonoBehaviour
 
         lastPlayedCutscene = artifactCount;
 
-        StartCutscene(artifactCount);
+        StartCoroutine(FadeAndStart(artifactCount));
+    }
+
+    IEnumerator FadeAndStart(int index)
+    {
+        yield return StartCoroutine(FadeIn());
+
+        StartCutscene(index);
+    }
+
+    IEnumerator FadeIn()
+    {
+        fadeUI.SetActive(true);
+
+        while (fadeGroup.alpha < 1)
+        {
+            fadeGroup.alpha += Time.deltaTime * fadeSpeed;
+            yield return null;
+        }
+    }
+
+    IEnumerator FadeOut()
+    {
+        while (fadeGroup.alpha > 0)
+        {
+            fadeGroup.alpha -= Time.deltaTime * fadeSpeed;
+            yield return null;
+        }
+
+        fadeUI.SetActive(false);
     }
 
     void StartCutscene(int index)
@@ -46,6 +81,13 @@ public class CutsceneManager : MonoBehaviour
 
     public void EndCutscene()
     {
+        StartCoroutine(FadeEnd());
+    }
+
+    IEnumerator FadeEnd()
+    {
+        yield return StartCoroutine(FadeOut());
+
         player.GetComponent<PlayerMovement2D>().enabled = true;
         player.GetComponent<PlayerInteract>().enabled = true;
         player.GetComponent<FlashlightController>().enabled = true;
@@ -54,6 +96,7 @@ public class CutsceneManager : MonoBehaviour
         stoneman.GetComponent<StoneManAI>().enabled = true;
         stoneman.GetComponent<StoneManMover>().enabled = true;
         stoneman.GetComponent<StoneManPatrol>().enabled = true;
+
         playerUI.SetActive(true);
 
         cutsceneUI.SetActive(false);
