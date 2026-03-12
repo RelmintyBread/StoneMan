@@ -10,17 +10,26 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject); // Tetap hidup antar scene
-
-        ValidateAudioSetup();
+    if (Instance != null && Instance != this)
+    {
+        Destroy(gameObject);
+        return;
     }
+
+    Instance = this;
+    DontDestroyOnLoad(gameObject);
+
+    EnsureSources();
+    ValidateAudioSetup();
+    }
+
+    void EnsureSources()
+{
+    if (bgmSource == null) bgmSource = gameObject.AddComponent<AudioSource>();
+    if (sfxSource == null) sfxSource = gameObject.AddComponent<AudioSource>();
+    if (stonemanSource == null) stonemanSource = gameObject.AddComponent<AudioSource>();
+    if (playerSource == null) playerSource = gameObject.AddComponent<AudioSource>();
+}
 
     // ─────────────────────────────────────────────
     //  INSPECTOR FIELDS
@@ -192,8 +201,11 @@ public class AudioManager : MonoBehaviour
     }
     public void StopFootstep()
     {
+    if (playerSource != null && playerSource.isPlaying)
+        {
         playerSource.loop = false;
         playerSource.Stop();
+        }
     }
     public void PlayExhausted() => playerSource.PlayOneShot(sfxExhausted);
 
