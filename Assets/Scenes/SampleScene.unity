@@ -4504,6 +4504,8 @@ MonoBehaviour:
   worldBounds: {fileID: 2042248781}
   teleportCooldown: 8
   maxRetry: 7
+  stuckCheckInterval: 1.5
+  stuckTeleportRadius: 5
 --- !u!61 &321131093
 BoxCollider2D:
   m_ObjectHideFlags: 0
