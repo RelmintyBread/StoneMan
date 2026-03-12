@@ -99,7 +99,7 @@ public class UIGameHandler : MonoBehaviour
 
     private void Start()
     {
-        AudioManager.Instance.PlayBGM(AudioManager.Instance.bgmGameplay);
+        AudioManager.Instance?.PlayBGM(AudioManager.Instance.bgmGameplay);
     }
 
     private void LateUpdate()

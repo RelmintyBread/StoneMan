@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GuideManager : MonoBehaviour
+public class GuideManager : MonoBehaviour, ISaveable
 {
     public static GuideManager Instance { get; private set; }
 
@@ -9,12 +9,6 @@ public class GuideManager : MonoBehaviour
     [SerializeField] private GameObject flashlightGuideUI;
     [SerializeField] private GameObject interactGuideUI;
     [SerializeField] private GameObject saveGuideUI;
-
-    private const string KeyGuideCompleted = "guide.completed";
-    private const string KeyMovementDone = "guide.movement.done";
-    private const string KeyFlashlightDone = "guide.flashlight.done";
-    private const string KeyInteractDone = "guide.interact.done";
-    private const string KeySaveDone = "guide.save.done";
 
     private bool isGuideCompleted;
     private bool isMovementDone;
@@ -33,6 +27,7 @@ public class GuideManager : MonoBehaviour
         }
 
         Instance = this;
+        SaveManager.RegisterSaveable(this);
     }
 
     private void Start()
@@ -87,12 +82,12 @@ public class GuideManager : MonoBehaviour
     [ContextMenu("Reset Guide Progress")]
     public void ResetGuideProgress()
     {
-        PlayerPrefs.DeleteKey(KeyGuideCompleted);
-        PlayerPrefs.DeleteKey(KeyMovementDone);
-        PlayerPrefs.DeleteKey(KeyFlashlightDone);
-        PlayerPrefs.DeleteKey(KeyInteractDone);
-        PlayerPrefs.DeleteKey(KeySaveDone);
-        PlayerPrefs.Save();
+        // PlayerPrefs.DeleteKey(KeyGuideCompleted);
+        // PlayerPrefs.DeleteKey(KeyMovementDone);
+        // PlayerPrefs.DeleteKey(KeyFlashlightDone);
+        // PlayerPrefs.DeleteKey(KeyInteractDone);
+        // PlayerPrefs.DeleteKey(KeySaveDone);
+        // PlayerPrefs.Save();
 
         RefreshGuideUI();
     }
@@ -185,5 +180,27 @@ public class GuideManager : MonoBehaviour
         {
             obj.SetActive(state);
         }
+    }
+
+    // ─────────────────────────────────────────────
+    //  SAVE/LOAD
+    // ─────────────────────────────────────────────
+    public void OnSave(SaveData data)
+    {
+        data.isGuideDone = isGuideCompleted;
+        data.isMovementDone = isMovementDone;
+        data.isFlashlightDone = isFlashlightDone;
+        data.isInteractDone = isInteractDone;
+        data.isSaveDone = isSaveDone;
+    }
+
+    public void OnLoad(SaveData data)
+    {
+        isGuideCompleted = data.isGuideDone;
+        isMovementDone = data.isMovementDone;
+        isFlashlightDone = data.isFlashlightDone;
+        isInteractDone = data.isInteractDone;
+        isSaveDone = data.isSaveDone;
+        RefreshGuideUI();
     }
 }

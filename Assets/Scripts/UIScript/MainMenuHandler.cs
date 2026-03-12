@@ -30,6 +30,12 @@ public class MainMenuHandler : MonoBehaviour
             return;
         }
 
+        if (SaveManager.Instance == null)
+        {
+            Debug.LogWarning("SaveManager instance not found. Cannot load saved game.");
+        }
+
+        StartNewGame();
         Debug.Log("No Save Found");
     }
 

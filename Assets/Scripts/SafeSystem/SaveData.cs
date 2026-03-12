@@ -51,4 +51,8 @@ public class SaveData
 
     // UI Guide-related data
     public bool isGuideDone;
+    public bool isMovementDone;
+    public bool isFlashlightDone;
+    public bool isInteractDone;
+    public bool isSaveDone;
 }
