@@ -142,8 +142,7 @@ public class StoneManAI : MonoBehaviour
 
         if (distanceToPlayer > noiseDistance)
         {
-            Debug.Log("Player escaped from StoneMan's chase range.");
-            AudioManager.Instance.StopStoneman();
+            AudioManager.Instance?.StopStoneman();
         }
 
     }

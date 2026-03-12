@@ -51,17 +51,19 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
 
     void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+        playerInteract = GetComponent<PlayerInteract>();
+
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
         SaveManager.RegisterSaveable(this);
     }
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        playerInteract = GetComponent<PlayerInteract>();
-
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponent<SpriteRenderer>();
-
         if (!hasLoadedData)
         {
             currentStamina = maxStamina;
@@ -145,67 +147,67 @@ public class PlayerMovement2D : MonoBehaviour, ISaveable
 
     void HandleSprite()
     {
-    if (spriteRenderer == null) return;
+        if (spriteRenderer == null) return;
 
-    if (moveInput.sqrMagnitude > 0)
-    {
-        walkTimer += Time.deltaTime;
-
-        if (walkTimer >= walkFrameRate)
+        if (moveInput.sqrMagnitude > 0)
         {
-            walkTimer = 0f;
-            walkFrame = (walkFrame + 1) % 4;
-        }
+            walkTimer += Time.deltaTime;
 
-        if (Mathf.Abs(moveInput.x) > Mathf.Abs(moveInput.y))
-        {
-            if (moveInput.x > 0)
+            if (walkTimer >= walkFrameRate)
             {
-                lastFacing = FacingDirection.Right;
-                spriteRenderer.sprite = GetWalkSprite(walkRight1, walkRight2, idleRight);
+                walkTimer = 0f;
+                walkFrame = (walkFrame + 1) % 4;
+            }
+
+            if (Mathf.Abs(moveInput.x) > Mathf.Abs(moveInput.y))
+            {
+                if (moveInput.x > 0)
+                {
+                    lastFacing = FacingDirection.Right;
+                    spriteRenderer.sprite = GetWalkSprite(walkRight1, walkRight2, idleRight);
+                }
+                else
+                {
+                    lastFacing = FacingDirection.Left;
+                    spriteRenderer.sprite = GetWalkSprite(walkLeft1, walkLeft2, idleLeft);
+                }
             }
             else
             {
-                lastFacing = FacingDirection.Left;
-                spriteRenderer.sprite = GetWalkSprite(walkLeft1, walkLeft2, idleLeft);
+                if (moveInput.y > 0)
+                {
+                    lastFacing = FacingDirection.Up;
+                    spriteRenderer.sprite = GetWalkSprite(walkUp1, walkUp2, idleUp);
+                }
+                else
+                {
+                    lastFacing = FacingDirection.Down;
+                    spriteRenderer.sprite = GetWalkSprite(walkDown1, walkDown2, idleDown);
+                }
             }
         }
         else
         {
-            if (moveInput.y > 0)
-            {
-                lastFacing = FacingDirection.Up;
-                spriteRenderer.sprite = GetWalkSprite(walkUp1, walkUp2, idleUp);
-            }
-            else
-            {
-                lastFacing = FacingDirection.Down;
-                spriteRenderer.sprite = GetWalkSprite(walkDown1, walkDown2, idleDown);
-            }
-        }
-    }
-    else
-    {
-        walkTimer = 0;
-        walkFrame = 0;
+            walkTimer = 0;
+            walkFrame = 0;
 
-        switch (lastFacing)
-        {
-            case FacingDirection.Up:
-                spriteRenderer.sprite = idleUp;
-                break;
-            case FacingDirection.Down:
-                spriteRenderer.sprite = idleDown;
-                break;
-            case FacingDirection.Left:
-                spriteRenderer.sprite = idleLeft;
-                break;
-            case FacingDirection.Right:
-                spriteRenderer.sprite = idleRight;
-                break;
+            switch (lastFacing)
+            {
+                case FacingDirection.Up:
+                    spriteRenderer.sprite = idleUp;
+                    break;
+                case FacingDirection.Down:
+                    spriteRenderer.sprite = idleDown;
+                    break;
+                case FacingDirection.Left:
+                    spriteRenderer.sprite = idleLeft;
+                    break;
+                case FacingDirection.Right:
+                    spriteRenderer.sprite = idleRight;
+                    break;
+            }
         }
     }
-}
 
 Sprite GetWalkSprite(Sprite walk1, Sprite walk2, Sprite idle)
 {
@@ -222,12 +224,24 @@ Sprite GetWalkSprite(Sprite walk1, Sprite walk2, Sprite idle)
 
 public void OnSave(SaveData data)
 {
+    if (rb == null)
+    {
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null) return;
+    }
+
     data.playerPosition = rb.position;
     data.playerStamina = currentStamina;
 }
 
 public void OnLoad(SaveData data)
 {
+    if (rb == null)
+    {
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null) return;
+    }
+
     rb.position = data.playerPosition;
     currentStamina = data.playerStamina;
     hasLoadedData = true;

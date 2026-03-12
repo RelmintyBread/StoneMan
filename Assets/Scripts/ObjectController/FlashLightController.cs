@@ -171,6 +171,7 @@ public class FlashlightController : MonoBehaviour, ISaveable
             if (!frozenEnemies.Contains(enemy))
             {
                 enemy.SetFrozen(true);
+                AudioManager.Instance?.PlayStun();
                 frozenEnemies.Add(enemy);
             }
         }
