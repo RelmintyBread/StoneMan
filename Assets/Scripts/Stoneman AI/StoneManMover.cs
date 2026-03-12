@@ -20,6 +20,39 @@ public class StoneManMover : MonoBehaviour
     [SerializeField] private float doorRaycastDistance = 0.8f;
     [SerializeField] private float doorOpenWaitDuration = 0.4f; // Sesuaikan dengan durasi animasi pintu nanti
 
+    [Header("Rotation")]
+    [SerializeField] private bool rotateWithMovement = false;
+
+    [Header("Animation Tuning")]
+    [SerializeField] private float directionDeadzone = 0.08f;
+
+    [Header("Directional Sprites")]
+    [SerializeField] private Sprite idleUp;
+    [SerializeField] private Sprite idleDown;
+    [SerializeField] private Sprite idleLeft;
+    [SerializeField] private Sprite idleRight;
+
+    [SerializeField] private Sprite walkUp1;
+    [SerializeField] private Sprite walkUp2;
+    [SerializeField] private Sprite walkUp3;
+
+    [SerializeField] private Sprite walkDown1;
+    [SerializeField] private Sprite walkDown2;
+    [SerializeField] private Sprite walkDown3;
+
+    [SerializeField] private Sprite walkLeft1;
+    [SerializeField] private Sprite walkLeft2;
+    [SerializeField] private Sprite walkLeft3;
+
+    [SerializeField] private Sprite walkRight1;
+    [SerializeField] private Sprite walkRight2;
+    [SerializeField] private Sprite walkRight3;
+
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [Header("Walk Animation")]
+    [SerializeField] private float walkFrameRate = 0.15f;
+
     // ─────────────────────────────────────────────
     //  PRIVATE STATE
     // ─────────────────────────────────────────────
@@ -28,6 +61,14 @@ public class StoneManMover : MonoBehaviour
     private bool isFrozen;
     private bool isWaitingForDoor;
     private Vector2 currentDirection; // Arah gerak terakhir, dipakai untuk raycast pintu
+    private bool isMoveCommanded;
+    private Vector2 lastPosition;
+    private Vector2 lastMoveDir;
+    private float walkTimer;
+    private int walkFrame;
+
+    private enum FacingDirection { Up, Down, Left, Right }
+    private FacingDirection lastFacing = FacingDirection.Down;
 
     // ─────────────────────────────────────────────
     //  UNITY LIFECYCLE
@@ -36,6 +77,24 @@ public class StoneManMover : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        lastPosition = rb.position;
+    }
+
+    void Update()
+    {
+        UpdateMovementState();
+        HandleSprite();
+    }
+
+    void FixedUpdate()
+    {
+        // Akan diset true di MoveTo bila ada perintah gerak pada frame ini.
+        isMoveCommanded = false;
     }
 
     // ─────────────────────────────────────────────
@@ -52,6 +111,7 @@ public class StoneManMover : MonoBehaviour
 
         Vector2 direction = (target - rb.position).normalized;
         currentDirection = direction;
+        isMoveCommanded = true;
 
         // Cek pintu di depan sebelum bergerak
         if (CheckAndHandleDoor(direction)) return;
@@ -67,10 +127,29 @@ public class StoneManMover : MonoBehaviour
         isFrozen = frozen;
         if (isFrozen)
             rb.linearVelocity = Vector2.zero;
+
+        if (isFrozen)
+        {
+            walkTimer = 0f;
+            walkFrame = 0;
+        }
     }
 
     public bool IsFrozen => isFrozen;
     public bool IsWaitingForDoor => isWaitingForDoor;
+
+    /// <summary>
+    /// Dipanggil setelah teleport agar animasi tidak "kedip" jalan.
+    /// </summary>
+    public void NotifyTeleported()
+    {
+        if (rb == null) return;
+
+        lastPosition = rb.position;
+        lastMoveDir = Vector2.zero;
+        walkTimer = 0f;
+        walkFrame = 0;
+    }
 
     // ─────────────────────────────────────────────
     //  MOVEMENT
@@ -78,10 +157,134 @@ public class StoneManMover : MonoBehaviour
 
     void ApplyMovement(Vector2 direction)
     {
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        rb.rotation = angle;
+        if (rotateWithMovement)
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            rb.rotation = angle;
+        }
 
         rb.MovePosition(rb.position + direction * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    void UpdateMovementState()
+    {
+        if (rb == null) return;
+
+        Vector2 currentPos = rb.position;
+        lastPosition = currentPos;
+
+        if (isFrozen || isWaitingForDoor || !isMoveCommanded)
+        {
+            lastMoveDir = Vector2.zero;
+            return;
+        }
+
+        if (currentDirection.sqrMagnitude > 0.0001f)
+        {
+            lastMoveDir = currentDirection;
+        }
+    }
+
+    void HandleSprite()
+    {
+        if (spriteRenderer == null) return;
+
+        Vector2 dir = lastMoveDir;
+        bool isMoving = dir.sqrMagnitude > 0.0001f;
+
+        if (isMoving)
+        {
+            walkTimer += Time.deltaTime;
+
+            if (walkTimer >= walkFrameRate)
+            {
+                walkTimer = 0f;
+                walkFrame = (walkFrame + 1) % 4;
+            }
+
+            float absX = Mathf.Abs(dir.x);
+            float absY = Mathf.Abs(dir.y);
+            float axisDelta = absX - absY;
+
+            if (axisDelta > directionDeadzone)
+            {
+                if (dir.x > 0)
+                {
+                    lastFacing = FacingDirection.Right;
+                    spriteRenderer.sprite = GetWalkSprite(walkRight1, walkRight2, walkRight3);
+                }
+                else
+                {
+                    lastFacing = FacingDirection.Left;
+                    spriteRenderer.sprite = GetWalkSprite(walkLeft1, walkLeft2, walkLeft3);
+                }
+            }
+            else if (-axisDelta > directionDeadzone)
+            {
+                if (dir.y > 0)
+                {
+                    lastFacing = FacingDirection.Up;
+                    spriteRenderer.sprite = GetWalkSprite(walkUp1, walkUp2, walkUp3);
+                }
+                else
+                {
+                    lastFacing = FacingDirection.Down;
+                    spriteRenderer.sprite = GetWalkSprite(walkDown1, walkDown2, walkDown3);
+                }
+            }
+            else
+            {
+                switch (lastFacing)
+                {
+                    case FacingDirection.Up:
+                        spriteRenderer.sprite = GetWalkSprite(walkUp1, walkUp2, walkUp3);
+                        break;
+                    case FacingDirection.Down:
+                        spriteRenderer.sprite = GetWalkSprite(walkDown1, walkDown2, walkDown3);
+                        break;
+                    case FacingDirection.Left:
+                        spriteRenderer.sprite = GetWalkSprite(walkLeft1, walkLeft2, walkLeft3);
+                        break;
+                    case FacingDirection.Right:
+                        spriteRenderer.sprite = GetWalkSprite(walkRight1, walkRight2, walkRight3);
+                        break;
+                }
+            }
+        }
+        else
+        {
+            walkTimer = 0f;
+            walkFrame = 0;
+
+            switch (lastFacing)
+            {
+                case FacingDirection.Up:
+                    spriteRenderer.sprite = idleUp;
+                    break;
+                case FacingDirection.Down:
+                    spriteRenderer.sprite = idleDown;
+                    break;
+                case FacingDirection.Left:
+                    spriteRenderer.sprite = idleLeft;
+                    break;
+                case FacingDirection.Right:
+                    spriteRenderer.sprite = idleRight;
+                    break;
+            }
+        }
+    }
+
+    Sprite GetWalkSprite(Sprite walk1, Sprite walk2, Sprite walk3)
+    {
+        switch (walkFrame)
+        {
+            case 0: return walk1;
+            case 1: return walk2;
+            case 2: return walk3;
+            case 3: return walk2;
+        }
+
+        return walk1;
     }
 
     // ─────────────────────────────────────────────

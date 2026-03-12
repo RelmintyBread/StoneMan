@@ -20,7 +20,7 @@ public class StoneManAI : MonoBehaviour
     [SerializeField] private PlayerHide hide;
 
     [Header("Detection Distances")]
-    public float bustedDistance = 1f;
+    public float bustedDistance = 1.5f;
     public float chaseDistance = 3f;
     public float teleportDistance = 8f;
     public float noiseDistance = 5f;
@@ -164,11 +164,16 @@ public class StoneManAI : MonoBehaviour
         float maxRing = inNoiseRange ? noiseDistance : teleportDistance;
 
         if (inNoiseRange)
+        {
             Debug.Log("StoneMan hears the player — teleporting close!");
-        AudioManager.Instance.PlayStonemanStep();
+            AudioManager.Instance?.PlayStonemanStep();
+        }
 
         if (TryFindValidTeleportPos(minRing, maxRing, out Vector2 dest))
+        {
             transform.position = dest;
+            mover.NotifyTeleported();
+        }
         else
             Debug.LogWarning("StoneMan: no valid teleport position found after max retries.");
     }
