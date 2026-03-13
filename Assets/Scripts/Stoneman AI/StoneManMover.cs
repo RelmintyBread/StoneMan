@@ -61,7 +61,6 @@ public class StoneManMover : MonoBehaviour
     private bool isFrozen;
     private bool isWaitingForDoor;
     private Vector2 currentDirection; // Arah gerak terakhir, dipakai untuk raycast pintu
-    private bool isMoveCommanded;
     private Vector2 lastPosition;
     private Vector2 lastMoveDir;
     private float walkTimer;
@@ -91,11 +90,7 @@ public class StoneManMover : MonoBehaviour
         HandleSprite();
     }
 
-    void FixedUpdate()
-    {
-        // Akan diset true di MoveTo bila ada perintah gerak pada frame ini.
-        isMoveCommanded = false;
-    }
+    void FixedUpdate() { }
 
     // ─────────────────────────────────────────────
     //  PUBLIC API
@@ -111,8 +106,6 @@ public class StoneManMover : MonoBehaviour
 
         Vector2 direction = (target - rb.position).normalized;
         currentDirection = direction;
-        isMoveCommanded = true;
-
         // Cek pintu di depan sebelum bergerak
         if (CheckAndHandleDoor(direction)) return;
 
@@ -171,18 +164,20 @@ public class StoneManMover : MonoBehaviour
         if (rb == null) return;
 
         Vector2 currentPos = rb.position;
-        lastPosition = currentPos;
-
-        if (isFrozen || isWaitingForDoor || !isMoveCommanded)
+        if (isFrozen || isWaitingForDoor)
         {
             lastMoveDir = Vector2.zero;
+            lastPosition = currentPos;
             return;
         }
 
-        if (currentDirection.sqrMagnitude > 0.0001f)
-        {
-            lastMoveDir = currentDirection;
-        }
+        Vector2 delta = currentPos - lastPosition;
+        if (delta.sqrMagnitude > 0.0001f)
+            lastMoveDir = delta.normalized;
+        else
+            lastMoveDir = Vector2.zero;
+
+        lastPosition = currentPos;
     }
 
     void HandleSprite()
