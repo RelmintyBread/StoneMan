@@ -21678,6 +21678,7 @@ MonoBehaviour:
   stoneman: {fileID: 321131091}
   fadeUI: {fileID: 1608545218}
   fadeSpeed: 2
+  flashlightCooldownAfterCutscene: 0.6
 --- !u!1 &1456890188
 GameObject:
   m_ObjectHideFlags: 0
@@ -22788,7 +22789,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1512591263
 RectTransform:
   m_ObjectHideFlags: 0
