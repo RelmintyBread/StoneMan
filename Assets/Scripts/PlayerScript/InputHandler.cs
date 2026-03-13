@@ -5,6 +5,7 @@ public class InputHandler : MonoBehaviour
     private PlayerInteract playerInteract;
 
     private FlashlightController flashlightController;
+    private float flashlightBlockedUntil;
 
     void Start()
     {
@@ -31,12 +32,27 @@ public class InputHandler : MonoBehaviour
         //Input for Flashlight
         if (flashlightController != null)
         {
+            if (Time.unscaledTime < flashlightBlockedUntil)
+            {
+                flashlightController.SetFlashlightHeld(false);
+                return;
+            }
+
             bool isHeld = Input.GetMouseButton(0);
             flashlightController.SetFlashlightHeld(isHeld);
             if (isHeld)
             {
                 GuideManager.Instance?.NotifyFlashlightUsed();
             }
+        }
+    }
+
+    public void BlockFlashlightForSeconds(float duration)
+    {
+        float until = Time.unscaledTime + Mathf.Max(0f, duration);
+        if (until > flashlightBlockedUntil)
+        {
+            flashlightBlockedUntil = until;
         }
     }
 }

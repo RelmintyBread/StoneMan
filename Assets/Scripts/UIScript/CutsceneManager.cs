@@ -14,6 +14,8 @@ public class CutsceneManager : MonoBehaviour
     public GameObject fadeUI;
     private CanvasGroup fadeGroup;
     public float fadeSpeed = 2f;
+    [Header("Flashlight Cooldown")]
+    [SerializeField] private float flashlightCooldownAfterCutscene = 0.6f;
 
     private int lastPlayedCutscene = 0;
 
@@ -91,7 +93,12 @@ public class CutsceneManager : MonoBehaviour
         player.GetComponent<PlayerMovement2D>().enabled = true;
         player.GetComponent<PlayerInteract>().enabled = true;
         player.GetComponent<FlashlightController>().enabled = true;
-        player.GetComponent<InputHandler>().enabled = true;
+        InputHandler inputHandler = player.GetComponent<InputHandler>();
+        if (inputHandler != null)
+        {
+            inputHandler.enabled = true;
+            inputHandler.BlockFlashlightForSeconds(flashlightCooldownAfterCutscene);
+        }
 
         stoneman.GetComponent<StoneManAI>().enabled = true;
         stoneman.GetComponent<StoneManMover>().enabled = true;

@@ -71,6 +71,7 @@ public class IntroCutscene : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            AudioManager.Instance?.PlayButtonClick();
             if (isTyping)
                 skipTyping = true;
             else
@@ -79,6 +80,7 @@ public class IntroCutscene : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
+            AudioManager.Instance?.PlayButtonClick();
             EndCutscene();
         }
     }

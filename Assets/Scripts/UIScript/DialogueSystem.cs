@@ -152,15 +152,12 @@ void Update()
 {
     if (Input.GetMouseButtonDown(0))
     {
-        if (isTyping)
-            skipTyping = true;
-        else
-            NextLine();
+        OnAdvanceInput();
     }
 
     if (Input.GetKeyDown(KeyCode.E))
     {
-        CutsceneManager.Instance.EndCutscene();
+        OnExitInput();
     }
 }
 IEnumerator TypeLine()
@@ -230,7 +227,7 @@ IEnumerator FadeIn()
         StartCoroutine(TypeLine());
     }
 
-void UpdateBorderColor(string line)
+    void UpdateBorderColor(string line)
 {
     if (dialogueBorder == null) return;
 
@@ -249,4 +246,19 @@ void UpdateBorderColor(string line)
         dialogueBorder.color = targetColor;
 
 }
+
+    public void OnAdvanceInput()
+    {
+        AudioManager.Instance?.PlayButtonClick();
+        if (isTyping)
+            skipTyping = true;
+        else
+            NextLine();
+    }
+
+    public void OnExitInput()
+    {
+        AudioManager.Instance?.PlayButtonClick();
+        CutsceneManager.Instance.EndCutscene();
+    }
 }
