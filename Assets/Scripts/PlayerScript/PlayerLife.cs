@@ -35,4 +35,23 @@ public class PlayerLife : MonoBehaviour
 
         UIGameHandler.Instance?.ShowGameOverPanel();
     }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        TryBusted(other);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        TryBusted(collision.collider);
+    }
+
+    void TryBusted(Collider2D other)
+    {
+        if (IsDead || other == null) return;
+        if (other.GetComponentInParent<StoneManAI>() == null) return;
+
+        Debug.Log("Player busted by StoneMan!");
+        Die();
+    }
 }

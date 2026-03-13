@@ -20,7 +20,6 @@ public class StoneManAI : MonoBehaviour
     [SerializeField] private PlayerHide hide;
 
     [Header("Detection Distances")]
-    public float bustedDistance = 1.5f;
     public float chaseDistance = 3f;
     public float teleportDistance = 8f;
     public float noiseDistance = 5f;
@@ -32,6 +31,9 @@ public class StoneManAI : MonoBehaviour
     [Header("Teleport")]
     public float teleportCooldown = 2f;
     [SerializeField] private int maxRetry = 7;
+
+    [Header("BGM")]
+    [SerializeField] private float bgmSwitchCooldown = 1.0f;
 
     [Header("Anti Stuck System")]
     [SerializeField] private float stuckCheckInterval = 1.5f;
@@ -52,7 +54,7 @@ public class StoneManAI : MonoBehaviour
 
     private float distanceToPlayer;
     private float teleportTimer;
-    private bool hasBustedPlayer;
+    private float lastBgmSwitchTime = -999f;
 
     // Anti stuck
     private Vector2 lastPosition;
@@ -87,7 +89,6 @@ public class StoneManAI : MonoBehaviour
         RefreshDistance();
         previousState = State.Patrol;
         UpdateState();
-        hasBustedPlayer = false;
     }
 
     void Update()
@@ -96,9 +97,6 @@ public class StoneManAI : MonoBehaviour
 
         RefreshDistance();
         UpdateState();
-
-        if (!hasBustedPlayer && distanceToPlayer <= bustedDistance)
-            OnPlayerBusted();
 
         CheckIfStuck();
     }
@@ -120,7 +118,6 @@ public class StoneManAI : MonoBehaviour
 
             case State.Chase:
                 patrol.StopPatrol();
-                AudioManager.Instance?.PlayChaseBGM();
                 mover.MoveTo(player.position);
                 break;
         }
@@ -149,8 +146,11 @@ public class StoneManAI : MonoBehaviour
         if (currentState == State.Patrol && previousState != State.Patrol)
             patrol.ReturnToNearestReachable();
 
+        if (currentState == State.Chase && previousState != State.Chase)
+            TrySwitchBGMToChase();
+
         if (currentState != State.Chase && previousState == State.Chase)
-            AudioManager.Instance?.PlayGameplayBGM();
+            TrySwitchBGMToGameplay();
 
         if (distanceToPlayer > noiseDistance)
             AudioManager.Instance?.StopStoneman();
@@ -275,24 +275,18 @@ public class StoneManAI : MonoBehaviour
             distanceToPlayer = Vector2.Distance(transform.position, player.position);
     }
 
-    void OnPlayerBusted()
+    void TrySwitchBGMToChase()
     {
-        if (hasBustedPlayer) return;
+        if (Time.time - lastBgmSwitchTime < bgmSwitchCooldown) return;
+        AudioManager.Instance?.PlayChaseBGM();
+        lastBgmSwitchTime = Time.time;
+    }
 
-        hasBustedPlayer = true;
-
-        Debug.Log("Player busted by StoneMan!");
-
-        patrol.StopPatrol();
-        mover.SetFrozen(true);
-
-        if (playerLife != null)
-        {
-            playerLife.Die();
-            return;
-        }
-
-        UIGameHandler.Instance?.ShowGameOverPanel();
+    void TrySwitchBGMToGameplay()
+    {
+        if (Time.time - lastBgmSwitchTime < bgmSwitchCooldown) return;
+        AudioManager.Instance?.PlayGameplayBGM();
+        lastBgmSwitchTime = Time.time;
     }
 
     /// <summary>

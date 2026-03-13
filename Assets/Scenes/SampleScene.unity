@@ -4468,8 +4468,8 @@ GameObject:
   - component: {fileID: 321131097}
   - component: {fileID: 321131094}
   - component: {fileID: 321131093}
-  - component: {fileID: 321131092}
   - component: {fileID: 321131098}
+  - component: {fileID: 321131092}
   - component: {fileID: 321131101}
   - component: {fileID: 321131100}
   - component: {fileID: 321131099}
@@ -4494,7 +4494,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StoneManAI
   player: {fileID: 923980468}
   hide: {fileID: 923980476}
-  bustedDistance: 1.8
   chaseDistance: 8
   teleportDistance: 20
   noiseDistance: 15
@@ -4504,6 +4503,7 @@ MonoBehaviour:
   worldBounds: {fileID: 2042248781}
   teleportCooldown: 8
   maxRetry: 7
+  bgmSwitchCooldown: 1
   stuckCheckInterval: 3
   stuckTeleportRadius: 5
 --- !u!61 &321131093
@@ -9500,7 +9500,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 0000000001ff09d745419583
@@ -13838,12 +13838,13 @@ GameObject:
   m_Component:
   - component: {fileID: 923980468}
   - component: {fileID: 923980465}
+  - component: {fileID: 923980479}
   - component: {fileID: 923980464}
+  - component: {fileID: 923980475}
   - component: {fileID: 923980471}
   - component: {fileID: 923980473}
   - component: {fileID: 923980472}
   - component: {fileID: 923980474}
-  - component: {fileID: 923980475}
   - component: {fileID: 923980476}
   - component: {fileID: 923980478}
   - component: {fileID: 923980477}
@@ -14130,6 +14131,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3255c236235922e44a4860b672740c74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLife
+--- !u!61 &923980479
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 923980462}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.0026507936, y: -0.17143618}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.23, y: 0.52}
+    newSize: {x: 0.23, y: 0.52}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.19919631, y: 0.15516862}
+  m_EdgeRadius: 0
 --- !u!1 &926100898
 GameObject:
   m_ObjectHideFlags: 0
@@ -31690,37 +31737,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.2718387, y: 2.2905774}
   m_EdgeRadius: 0
---- !u!1 &2014080769
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2014080770}
-  m_Layer: 9
-  m_Name: Wall
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2014080770
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2014080769}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 33.545635, y: -105.90395, z: 0}
-  m_LocalScale: {x: 1.2848055, y: 29.581383, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2030695968
 GameObject:
   m_ObjectHideFlags: 0
@@ -33447,9 +33463,9 @@ SceneRoots:
   - {fileID: 585008913}
   - {fileID: 1037782864}
   - {fileID: 854948880}
-  - {fileID: 2014080770}
   - {fileID: 2058717442}
   - {fileID: 866790727}
+  - {fileID: 1991155826}
   - {fileID: 1785872140}
   - {fileID: 322984828}
   - {fileID: 1800983293}
@@ -33459,7 +33475,6 @@ SceneRoots:
   - {fileID: 697503470}
   - {fileID: 690103926}
   - {fileID: 977518854}
-  - {fileID: 1991155826}
   - {fileID: 129576150}
   - {fileID: 1695455548}
   - {fileID: 1453798156}
