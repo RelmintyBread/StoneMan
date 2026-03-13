@@ -120,7 +120,7 @@ public class StoneManAI : MonoBehaviour
 
             case State.Chase:
                 patrol.StopPatrol();
-                AudioManager.Instance.PlayBGM(AudioManager.Instance.bgmChase);
+                AudioManager.Instance?.PlayChaseBGM();
                 mover.MoveTo(player.position);
                 break;
         }
@@ -150,7 +150,7 @@ public class StoneManAI : MonoBehaviour
             patrol.ReturnToNearestReachable();
 
         if (currentState != State.Chase && previousState == State.Chase)
-            AudioManager.Instance.PlayBGM(AudioManager.Instance.bgmGameplay);
+            AudioManager.Instance?.PlayGameplayBGM();
 
         if (distanceToPlayer > noiseDistance)
             AudioManager.Instance?.StopStoneman();
@@ -234,36 +234,36 @@ public class StoneManAI : MonoBehaviour
     //  ANTI STUCK SYSTEM
     // ─────────────────────────────────────────────
 
-void CheckIfStuck()
-{
-    stuckCheckTimer += Time.deltaTime;
-
-    if (stuckCheckTimer < stuckCheckInterval) return;
-
-    stuckCheckTimer = 0f;
-
-    Vector2 currentPos = transform.position;
-
-    float movement = Vector2.Distance(currentPos, lastPosition);
-
-    if (movement < 0.2f)
+    void CheckIfStuck()
     {
-        Debug.Log("StoneMan is stuck! Forcing warp forward!");
+        stuckCheckTimer += Time.deltaTime;
 
-        Vector2 dirToPlayer = (player.position - transform.position).normalized;
+        if (stuckCheckTimer < stuckCheckInterval) return;
 
-        // warp di depan stoneman
-        Vector2 newPos = currentPos + dirToPlayer * stuckTeleportRadius;
+        stuckCheckTimer = 0f;
 
-        if (IsPositionValidIgnoreObstacle(newPos))
+        Vector2 currentPos = transform.position;
+
+        float movement = Vector2.Distance(currentPos, lastPosition);
+
+        if (movement < 0.2f)
         {
-            transform.position = newPos;
-            mover.NotifyTeleported();
-        }
-    }
+            Debug.Log("StoneMan is stuck! Forcing warp forward!");
 
-    lastPosition = currentPos;
-}
+            Vector2 dirToPlayer = (player.position - transform.position).normalized;
+
+            // warp di depan stoneman
+            Vector2 newPos = currentPos + dirToPlayer * stuckTeleportRadius;
+
+            if (IsPositionValidIgnoreObstacle(newPos))
+            {
+                transform.position = newPos;
+                mover.NotifyTeleported();
+            }
+        }
+
+        lastPosition = currentPos;
+    }
 
     // ─────────────────────────────────────────────
     //  HELPERS

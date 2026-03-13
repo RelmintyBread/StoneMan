@@ -85,6 +85,19 @@ public class AudioManager : MonoBehaviour
 
     public void StopBGM() => StartCoroutine(FadeOut(bgmSource, bgmFadeDuration));
 
+    public void StopAllAudio()
+    {
+        if (logAudioEvents) Debug.Log("[AudioManager] StopAllAudio");
+
+        StopAllCoroutines();
+
+        if (bgmSource != null) bgmSource.Stop();
+        if (sfxSource != null) sfxSource.Stop();
+        if (stonemanSource != null) stonemanSource.Stop();
+        if (playerSource != null) playerSource.Stop();
+        if (holdLoopSource != null) holdLoopSource.Stop();
+    }
+
     IEnumerator FadeBGM(AudioClip newClip)
     {
         // Fade out BGM lama

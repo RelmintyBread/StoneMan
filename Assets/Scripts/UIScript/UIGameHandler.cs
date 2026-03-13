@@ -99,7 +99,7 @@ public class UIGameHandler : MonoBehaviour
 
     private void Start()
     {
-        AudioManager.Instance?.PlayBGM(AudioManager.Instance.bgmGameplay);
+        AudioManager.Instance?.PlayGameplayBGM();
     }
 
     private void LateUpdate()
@@ -220,6 +220,7 @@ public class UIGameHandler : MonoBehaviour
         IsGameOver = true;
         EndHoldInteraction(false);
         HideInteractPrompt();
+        AudioManager.Instance?.StopAllAudio();
 
         if (gameOverPanel != null)
         {

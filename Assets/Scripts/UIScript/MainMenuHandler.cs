@@ -55,4 +55,11 @@ public class MainMenuHandler : MonoBehaviour
         optionPanel.SetActive(true);
         mainMenuPanel.SetActive(false);
     }
+
+    public void CloseOptionPanel()
+    {
+        AudioManager.Instance?.PlayButtonClick();
+        optionPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
+    }
 }

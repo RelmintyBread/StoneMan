@@ -95,6 +95,15 @@ public class FlashlightController : MonoBehaviour, ISaveable
     // ===== Main Handlers =====
     void HandleFlashlight()
     {
+        if (IsPausedOrGameOver())
+        {
+            if (isOn)
+            {
+                TurnOff();
+            }
+            return;
+        }
+
         bool shouldBeOn = isHeld && HasBattery();
 
         if (shouldBeOn && !isOn)
@@ -265,5 +274,11 @@ public class FlashlightController : MonoBehaviour, ISaveable
         return currentBattery > 0;
     }
 
+    bool IsPausedOrGameOver()
+    {
+        if (Time.timeScale == 0f) return true;
+        if (UIGameHandler.Instance != null && UIGameHandler.Instance.IsGameOver) return true;
+        return PaperScript.GameState.IsPaused;
+    }
 
 }
